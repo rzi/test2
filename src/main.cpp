@@ -117,7 +117,6 @@ void setup(){
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get");
     request->send(SPIFFS, "/index.html", "text/html", false, processor);
-    // request->send(SPIFFS, "/main.js", "text/javascript", false, processor);
   });
 
   // Route to load style.css file
@@ -136,14 +135,6 @@ void setup(){
     digitalWrite(ledPin, HIGH);    
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
-    // Route to set GPIO to LOW
-   // Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2>
-  server.on("/update", HTTP_GET, [] (AsyncWebServerRequest *request) {
-   
-    Serial.println("update");
-    request->send(200, "text/plain", "OK");
-  });
-  server.serveStatic("/a", LittleFS, "/index.html");
   // Route for root / web page
   server.on("/b", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get2");
@@ -156,57 +147,60 @@ void setup(){
  
 void loop(){
   timeClient.update();
-
-  time_t epochTime = timeClient.getEpochTime();
-  Serial.print("Epoch Time: ");
-  Serial.println(epochTime);
-  
-  String formattedTime = timeClient.getFormattedTime();
-  Serial.print("Formatted Time: ");
-  Serial.println(formattedTime);  
-
-  int currentHour = timeClient.getHours();
-  Serial.print("Hour: ");
-  Serial.println(currentHour);  
-
-  int currentMinute = timeClient.getMinutes();
-  Serial.print("Minutes: ");
-  Serial.println(currentMinute); 
+  int sek = timeClient.getSeconds();
+  Serial.println(sek);
    
-  int currentSecond = timeClient.getSeconds();
-  Serial.print("Seconds: ");
-  Serial.println(currentSecond);  
+  if (sek ==0){
+    time_t epochTime = timeClient.getEpochTime();
+    Serial.print("Epoch Time: ");
+    Serial.println(epochTime);
+    
+    String formattedTime = timeClient.getFormattedTime();
+    Serial.print("Formatted Time: ");
+    Serial.println(formattedTime);  
 
-  String weekDay = weekDays[timeClient.getDay()];
-  Serial.print("Week Day: ");
-  Serial.println(weekDay);    
+    int currentHour = timeClient.getHours();
+    Serial.print("Hour: ");
+    Serial.println(currentHour);  
 
-  //Get a time structure
-  struct tm *ptm = gmtime ((time_t *)&epochTime); 
+    int currentMinute = timeClient.getMinutes();
+    Serial.print("Minutes: ");
+    Serial.println(currentMinute); 
+    
+    int currentSecond = timeClient.getSeconds();
+    Serial.print("Seconds: ");
+    Serial.println(currentSecond);  
 
-  int monthDay = ptm->tm_mday;
-  Serial.print("Month day: ");
-  Serial.println(monthDay);
+    String weekDay = weekDays[timeClient.getDay()];
+    Serial.print("Week Day: ");
+    Serial.println(weekDay);    
 
-  int currentMonth = ptm->tm_mon+1;
-  Serial.print("Month: ");
-  Serial.println(currentMonth);
+    //Get a time structure
+    struct tm *ptm = gmtime ((time_t *)&epochTime); 
 
-  String currentMonthName = months[currentMonth-1];
-  Serial.print("Month name: ");
-  Serial.println(currentMonthName);
+    int monthDay = ptm->tm_mday;
+    Serial.print("Month day: ");
+    Serial.println(monthDay);
 
-  int currentYear = ptm->tm_year+1900;
-  Serial.print("Year: ");
-  Serial.println(currentYear);
+    int currentMonth = ptm->tm_mon+1;
+    Serial.print("Month: ");
+    Serial.println(currentMonth);
 
-  //Print complete date:
-  String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay);
-  Serial.print("Current date: ");
-  Serial.println(currentDate);
+    String currentMonthName = months[currentMonth-1];
+    Serial.print("Month name: ");
+    Serial.println(currentMonthName);
 
-  Serial.println("");
+    int currentYear = ptm->tm_year+1900;
+    Serial.print("Year: ");
+    Serial.println(currentYear);
+
+    //Print complete date:
+    String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay);
+    Serial.print("Current date: ");
+    Serial.println(currentDate);
+    Serial.println("");
+  }
   digitalWrite(ledPin, HIGH);
-  delay(2000);
+  delay(750);
   digitalWrite(ledPin, LOW);
 }
