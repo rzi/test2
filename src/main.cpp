@@ -4,12 +4,22 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 // Replace with your network credentials
 const char* ssid = "RZI"; //Replace with your own SSID
 const char* password = "rafalzietak"; //Replace with your own password
 
 const int ledPin = 2;
 String ledState;
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
+//Week Days
+String weekDays[7]={"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+//Month names
+String months[12]={"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -51,25 +61,23 @@ void listDir(const char * dirname) {
   }
 }
 
-void writeFile(const char * path, const char * message) {
-  Serial.printf("Writing file: %s\n", path);
-
-  File file = LittleFS.open(path, "w");
-  if (!file) {
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-  if (file.print(message)) {
-    Serial.println("File written");
-  } else {
-    Serial.println("Write failed");
-  }
-  delay(2000); // Make sure the CREATE and LASTWRITE times are different
-  file.close();
-}
+// void writeFile(const char * path, const char * message) {
+//   Serial.printf("Writing file: %s\n", path);
+//   File file = LittleFS.open(path, "w");
+//   if (!file) {
+//     Serial.println("Failed to open file for writing");
+//     return;
+//   }
+//   if (file.print(message)) {
+//     Serial.println("File written");
+//   } else {
+//     Serial.println("Write failed");
+//   }
+//   delay(2000); // Make sure the CREATE and LASTWRITE times are different
+//   file.close();
+// }
  
 void setup(){
-
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
 
@@ -97,7 +105,14 @@ void setup(){
 
   // Print ESP32 Local IP Address
   Serial.println(WiFi.localIP());
-
+  // Initialize a NTPClient to get time
+  timeClient.begin(7200);
+  // Set offset time in seconds to adjust for your timezone, for example:
+  // GMT +1 = 3600
+  // GMT +8 = 28800
+  // GMT -1 = -3600
+  // GMT 0 = 0
+  timeClient.setTimeOffset(2);
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get");
@@ -128,7 +143,7 @@ void setup(){
     Serial.println("update");
     request->send(200, "text/plain", "OK");
   });
-server.serveStatic("/a", LittleFS, "/index.html");
+  server.serveStatic("/a", LittleFS, "/index.html");
   // Route for root / web page
   server.on("/b", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get2");
@@ -140,5 +155,58 @@ server.serveStatic("/a", LittleFS, "/index.html");
 }
  
 void loop(){
+  timeClient.update();
+
+  time_t epochTime = timeClient.getEpochTime();
+  Serial.print("Epoch Time: ");
+  Serial.println(epochTime);
   
+  String formattedTime = timeClient.getFormattedTime();
+  Serial.print("Formatted Time: ");
+  Serial.println(formattedTime);  
+
+  int currentHour = timeClient.getHours();
+  Serial.print("Hour: ");
+  Serial.println(currentHour);  
+
+  int currentMinute = timeClient.getMinutes();
+  Serial.print("Minutes: ");
+  Serial.println(currentMinute); 
+   
+  int currentSecond = timeClient.getSeconds();
+  Serial.print("Seconds: ");
+  Serial.println(currentSecond);  
+
+  String weekDay = weekDays[timeClient.getDay()];
+  Serial.print("Week Day: ");
+  Serial.println(weekDay);    
+
+  //Get a time structure
+  struct tm *ptm = gmtime ((time_t *)&epochTime); 
+
+  int monthDay = ptm->tm_mday;
+  Serial.print("Month day: ");
+  Serial.println(monthDay);
+
+  int currentMonth = ptm->tm_mon+1;
+  Serial.print("Month: ");
+  Serial.println(currentMonth);
+
+  String currentMonthName = months[currentMonth-1];
+  Serial.print("Month name: ");
+  Serial.println(currentMonthName);
+
+  int currentYear = ptm->tm_year+1900;
+  Serial.print("Year: ");
+  Serial.println(currentYear);
+
+  //Print complete date:
+  String currentDate = String(currentYear) + "-" + String(currentMonth) + "-" + String(monthDay);
+  Serial.print("Current date: ");
+  Serial.println(currentDate);
+
+  Serial.println("");
+  digitalWrite(ledPin, HIGH);
+  delay(2000);
+  digitalWrite(ledPin, LOW);
 }
