@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- 
+  Rui Santos
+  Complete project details at https://RandomNerdTutorials.com  
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ESP8266 Web Server</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+  <h1>ESP8266 Web Server</h1> 
+  <form id="f1" action="" method="get">
+    <input type="text" name="czas" size="10" />
+  </form>
+  <br>
+  <div > Manualnie </div>
+  <br>
+  <button onclick=on()> Włącz</button> 
+  <button onclick=off()> Wyłącz</button>
+  <br><br><br>
+  <div> Programowo</div>
+  <br>
+  <div class="group">
+    <input type="text" id="calendar">
+  </div>
+  <br>
+
+  <button onClick= set()> Ustaw</button>
+    <script>
+      
+      const flatpickr = require("./flatpickr");
+      //  import flatpickr from "flatpickr"
+
+      var year, month, day ,hour, minute, seconds
+      function on() {
+        fetch ("http://192.168.100.9/led2on")
+      }
+      function off() {
+        fetch ("http://192.168.100.9/led2off")
+      }
+      function set() {
+        fetch ("http://192.168.100.9/update")
+      }
+
+      function zegar() {
+        var data = new Date();
+        year = data.getFullYear();
+        month = data.getMonth()+1;
+        day = data.getDate();
+        hour = data.getHours();
+        minute = data.getMinutes();
+        second = data.getSeconds();
+        var terazjest = ""+ year + ((month<10)?"/0":"/")+ month + ((day<10)?"/0":"/")+ day + "  " +
+         +hour+
+        ((minute<10)?":0":":")+minute+
+        ((second<10)?":0":":")+second;
+        document.getElementById("f1").czas.value = terazjest;
+        setTimeout("zegar()", 1000);
+      }
+      zegar();
+
+      const fp = flatpickr("#calendar", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        "minDate": new Date().fp_incr(1)
+      }); // flatpickr
+      </script>
+      
+</body>
+</html>
