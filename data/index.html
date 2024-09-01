@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+ 
 </head>
 <body>
   <h1>ESP8266 Web Server</h1> 
@@ -31,10 +31,10 @@
   <br>
 
   <button onClick= set()> Ustaw</button>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
       
-      const flatpickr = require("./flatpickr");
-      //  import flatpickr from "flatpickr"
 
       var year, month, day ,hour, minute, seconds
       function on() {
@@ -64,10 +64,9 @@
       }
       zegar();
 
-      const fp = flatpickr("#calendar", {
+      flatpickr("#calendar", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
-        "minDate": new Date().fp_incr(1)
       }); // flatpickr
       </script>
       
