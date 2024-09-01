@@ -13,7 +13,7 @@
  
 </head>
 <body>
-  <h1>ESP8266 Web Server</h1> 
+  <h2>ESP8266 Web Server</h2> 
   <form id="f1" action="" method="get">
     <input type="text" name="czas" size="10" />
   </form>
@@ -30,12 +30,10 @@
   </div>
   <br>
 
-  <button onClick= set()> Ustaw</button>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script> -->
+  <button onClick= setStart()> Ustaw Start</button>
+  <button onClick= setStart()> Ustaw Stop</button>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-      
-
+    <script>     
       var year, month, day ,hour, minute, seconds
       function on() {
         fetch ("http://192.168.100.9/led2on")
@@ -43,10 +41,16 @@
       function off() {
         fetch ("http://192.168.100.9/led2off")
       }
-      function set() {
-        fetch ("http://192.168.100.9/update")
+      function setStart() {
+        var startValue = document.getElementById("calendar").value;
+        console.log("value = " + startValue );
+        fetch ("http://192.168.100.9/start=" +startValue)
       }
-
+      function setStop() {
+        var stopValue = document.getElementById("calendar").value;
+        console.log("value = " + stopValue );
+        fetch ("http://192.168.100.9/stop= " +stopValue);
+      }
       function zegar() {
         var data = new Date();
         year = data.getFullYear();
@@ -68,7 +72,6 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       }); // flatpickr
-      </script>
-      
+    </script>
 </body>
 </html>
