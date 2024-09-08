@@ -31,25 +31,31 @@
   <br>
 
   <button onClick= setStart()> Ustaw Start</button>
-  <button onClick= setStart()> Ustaw Stop</button>
+  <button onClick= setStop()> Ustaw Stop</button>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>     
       var year, month, day ,hour, minute, seconds
       function on() {
-        fetch ("http://192.168.100.9/led2on")
+        fetch ("http://192.168.100.7/led2on")
       }
       function off() {
-        fetch ("http://192.168.100.9/led2off")
+        fetch ("http://192.168.100.7/led2off")
       }
       function setStart() {
         var startValue = document.getElementById("calendar").value;
-        console.log("value = " + startValue );
-        fetch ("http://192.168.100.9/start=" +startValue)
+        console.log("Start value = " + startValue );
+        const url = new URL('http://192.168.100.7/');
+        url.searchParams.set('start', '1');
+        fetch(url);
       }
+      
       function setStop() {
         var stopValue = document.getElementById("calendar").value;
-        console.log("value = " + stopValue );
-        fetch ("http://192.168.100.9/stop= " +stopValue);
+        console.log("Stop value = " + stopValue );
+
+        const url = new URL('http://192.168.100.7/');
+        url.searchParams.set('stop', '1');
+        fetch(url);
       }
       function zegar() {
         var data = new Date();

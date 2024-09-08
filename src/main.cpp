@@ -6,6 +6,9 @@
 #include <ESPAsyncWebServer.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <ArduinoJson.h>
+#include "AsyncJson.h"
+
 // Replace with your network credentials
 const char* ssid = "RZI"; //Replace with your own SSID
 const char* password = "rafalzietak"; //Replace with your own password
@@ -40,43 +43,6 @@ String processor(const String& var){
   return String();
 }
 
-void listDir(const char * dirname) {
-  Serial.printf("Listing directory: %s\n", dirname);
-
-  Dir root = LittleFS.openDir(dirname);
-
-  while (root.next()) {
-    File file = root.openFile("r");
-    Serial.print("  FILE: ");
-    Serial.print(root.fileName());
-    Serial.print("  SIZE: ");
-    Serial.print(file.size());
-    time_t cr = file.getCreationTime();
-    time_t lw = file.getLastWrite();
-    file.close();
-    struct tm * tmstruct = localtime(&cr);
-    Serial.printf("    CREATION: %d-%02d-%02d %02d:%02d:%02d\n", (tmstruct->tm_year) + 1900, (tmstruct->tm_mon) + 1, tmstruct->tm_mday, tmstruct->tm_hour, tmstruct->tm_min, tmstruct->tm_sec);
-    tmstruct = localtime(&lw);
-    Serial.printf("  LAST WRITE: %d-%02d-%02d %02d:%02d:%02d\n", (tmstruct->tm_year) + 1900, (tmstruct->tm_mon) + 1, tmstruct->tm_mday, tmstruct->tm_hour, tmstruct->tm_min, tmstruct->tm_sec);
-  }
-}
-
-// void writeFile(const char * path, const char * message) {
-//   Serial.printf("Writing file: %s\n", path);
-//   File file = LittleFS.open(path, "w");
-//   if (!file) {
-//     Serial.println("Failed to open file for writing");
-//     return;
-//   }
-//   if (file.print(message)) {
-//     Serial.println("File written");
-//   } else {
-//     Serial.println("Write failed");
-//   }
-//   delay(2000); // Make sure the CREATE and LASTWRITE times are different
-//   file.close();
-// }
- 
 void setup(){
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
@@ -116,7 +82,15 @@ void setup(){
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get");
-    request->send(SPIFFS, "/index.html", "text/html", false, processor);
+    //List all parameters
+    int params = request->params();
+    Serial.println( " params1 = "+ params);
+    for (int i = 0; i < params; i++)
+    {
+    AsyncWebParameter* p = request->getParam(i);
+    Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());     
+    }
+    request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
 
   // Route to load style.css file
@@ -135,10 +109,9 @@ void setup(){
     digitalWrite(ledPin, HIGH);    
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
-  // Route for root / web page
-  server.on("/b", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("get2");
-    request->send(SPIFFS, "/index.html", "text/html", false, processor);
+ 
+  server.onNotFound([](AsyncWebServerRequest *request) {
+      request->send(404, "application/json", "{\"message\":\"Not found\"}");
   });
   
   // Start server
