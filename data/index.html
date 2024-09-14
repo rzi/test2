@@ -32,6 +32,7 @@
 
   <button onClick= setStart()> Ustaw Start</button>
   <button onClick= setStop()> Ustaw Stop</button>
+  <p> Lista zaprogramowana</p>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>     
       var year, month, day ,hour, minute, seconds
@@ -78,39 +79,8 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       }); // flatpickr
-
-      // fetch EEprom data
-      // (async () => {
-          // const res = await fetch("http://192.168.100.7/eeprom");
-          //var aa = res.json();
-          //console.log(aa);
-          // console.log(res.data);
-          // console.log(JSON.stringify(res))
-          //console.log(((res.json())));
-          // const data = res.data
-          //  console.log(res.text());
-          // console.log(await currentloginid());
-          // for (const key in res.text()) {
-          //     console.log(`${key}: ${res.text().[key]}`);
-
-          // }
-      // })();
-      
-      // function currentloginid() {
-      //   return fetch('http://192.168.100.7/eeprom', {
-      //       method: 'GET',
-      //     })
-      //     .then(function(response) {
-      //       return response.json();
-      //     })
-      //     .then(function(data) {
-      //       var userid = JSON.parse(data);
-      //       console.log(userid);
-      //       return userid;
-      //     })
-      // }
-      // var aa =  currentloginid()
-      // console.log(aa);
+      var list = new List;
+      console.log("Lista " +list.view());
 
       function currentloginid() {
         return fetch('http://192.168.100.7/eeprom')
@@ -118,16 +88,81 @@
       }
       const storedPromise = currentloginid();
       storedPromise.then(storedPromise => {
-        //  console.log(JSON.parse(storedPromise))
+        var item ="";
           for (const key in storedPromise) {
-            console.log(`${key}: ${storedPromise[key]}`);
+            console.log(`${key}`);
+            item =item + "Index " + key.toString() + " " ;
             var aa =storedPromise[key]
             for (const key2 in aa) {
             console.log(`${key2}: ${aa[key2]}`);
+            item =item + key2.toString() + " " + aa[key2] +" ";
             }
           }
-      }
+          list.append(item);
+          console.log(list.view());
+        }
       )
+      function List() {
+        this.listElements = [];
+        this.listSize = 0;
+        this.pos = 0;
+        this.append = function(element){
+          this.listElements[this.listSize++] = element;
+        };
+        this.find = function(element){
+          for (var i = 0; i < this.listElements.length; i++) {
+            if(this.listElements[i] == element){
+              return i;
+            } 
+          } return -1;
+        };
+        this.remove = function(element){
+          var elemPos = this.find(element)
+          if(elemPos > -1){
+            this.listElements.splice(elemPos,1);
+            this.listSize--;
+          }
+        };
+        this.length = function(){
+          return this.listSize;
+        };
+        this.view = function(){
+          return this.listElements;
+        };
+        this.insert = function(element, after){
+          var afterPos = this.find(after);
+          if(afterPos > -1){
+            this.listElements.splice(afterPos+1,0,element);
+            this.listSize++;
+          }
+        };
+        this.contains = function(element){
+          var elemPos = this.find(element);
+          if(elemPos > -1) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+        this.moveTo = function(position){
+          this.pos = position
+        };
+        this.getElem = function(){
+          return this.listElements[this.pos];
+        };
+        this.previous = function(){
+          return this.listElements[--this.pos];
+        };
+        this.next = function(){
+          return this.listElements[this.pos++];
+        };
+        this.front = function(){
+          this.pos = 0;
+        }
+        this.end = function(){
+          this.pos = this.listSize-1;
+        }
+      }
 
     </script>
 </body>
