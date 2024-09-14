@@ -33,6 +33,8 @@
   <button onClick= setStart()> Ustaw Start</button>
   <button onClick= setStop()> Ustaw Stop</button>
   <p> Lista zaprogramowana</p>
+  <div id="list-container"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>     
       var year, month, day ,hour, minute, seconds
@@ -79,90 +81,112 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       }); // flatpickr
-      var list = new List;
-      console.log("Lista " +list.view());
+      // var list = new List;
+      var items1  = new Array();
+      var item ="";
+      // console.log("Lista " +list.view());
 
       function currentloginid() {
         return fetch('http://192.168.100.7/eeprom')
           .then(response => response.json())
       }
-      const storedPromise = currentloginid();
-      storedPromise.then(storedPromise => {
-        var item ="";
+        const storedPromise = currentloginid();
+        storedPromise.then(storedPromise => {
           for (const key in storedPromise) {
+            item="";
             console.log(`${key}`);
-            item =item + "Index " + key.toString() + " " ;
+            // item =item + key.toString() + " " ;
             var aa =storedPromise[key]
             for (const key2 in aa) {
-            console.log(`${key2}: ${aa[key2]}`);
-            item =item + key2.toString() + " " + aa[key2] +" ";
+              //console.log(`${key2}: ${aa[key2]}`);
+              item =item + key2.toString() + " " + aa[key2] +" ";
+              // console.log(item);
             }
+            // console.log(item);
+            items1.push(item);
+            console.log("item3 = " + items1);
+
+            // Znajdź kontener, do którego dodasz listę
+            const listContainer = document.getElementById('list-container');
+            // Tworzenie elementu <ol> (numerowana lista)
+            const ul = document.createElement('ul');
+            // Iterowanie po elementach listy
+            // items1.forEach((list) => {
+                const li = document.createElement('li'); // Tworzenie <li> dla każdego elementu
+                li.textContent = item; // Ustawienie tekstu w elemencie <li>
+                ul.appendChild(li); // Dodawanie <li> do <ol>
+            // });
+            // Dodanie <ol> do kontenera
+            listContainer.appendChild(ul);
+            // console.log("item1 = " + items1);
           }
-          list.append(item);
-          console.log(list.view());
+          // list.append(item);
+          // console.log("item2 = "+ item);
+          // console.log(list.view());
+
         }
       )
-      function List() {
-        this.listElements = [];
-        this.listSize = 0;
-        this.pos = 0;
-        this.append = function(element){
-          this.listElements[this.listSize++] = element;
-        };
-        this.find = function(element){
-          for (var i = 0; i < this.listElements.length; i++) {
-            if(this.listElements[i] == element){
-              return i;
-            } 
-          } return -1;
-        };
-        this.remove = function(element){
-          var elemPos = this.find(element)
-          if(elemPos > -1){
-            this.listElements.splice(elemPos,1);
-            this.listSize--;
-          }
-        };
-        this.length = function(){
-          return this.listSize;
-        };
-        this.view = function(){
-          return this.listElements;
-        };
-        this.insert = function(element, after){
-          var afterPos = this.find(after);
-          if(afterPos > -1){
-            this.listElements.splice(afterPos+1,0,element);
-            this.listSize++;
-          }
-        };
-        this.contains = function(element){
-          var elemPos = this.find(element);
-          if(elemPos > -1) {
-            return true;
-          } else {
-            return false;
-          }
-        };
-        this.moveTo = function(position){
-          this.pos = position
-        };
-        this.getElem = function(){
-          return this.listElements[this.pos];
-        };
-        this.previous = function(){
-          return this.listElements[--this.pos];
-        };
-        this.next = function(){
-          return this.listElements[this.pos++];
-        };
-        this.front = function(){
-          this.pos = 0;
-        }
-        this.end = function(){
-          this.pos = this.listSize-1;
-        }
-      }
+      // function List() {
+      //   this.listElements = [];
+      //   this.listSize = 0;
+      //   this.pos = 0;
+      //   this.append = function(element){
+      //     this.listElements[this.listSize++] = element;
+      //   };
+      //   this.find = function(element){
+      //     for (var i = 0; i < this.listElements.length; i++) {
+      //       if(this.listElements[i] == element){
+      //         return i;
+      //       } 
+      //     } return -1;
+      //   };
+      //   this.remove = function(element){
+      //     var elemPos = this.find(element)
+      //     if(elemPos > -1){
+      //       this.listElements.splice(elemPos,1);
+      //       this.listSize--;
+      //     }
+      //   };
+      //   this.length = function(){
+      //     return this.listSize;
+      //   };
+      //   this.view = function(){
+      //     return this.listElements;
+      //   };
+      //   this.insert = function(element, after){
+      //     var afterPos = this.find(after);
+      //     if(afterPos > -1){
+      //       this.listElements.splice(afterPos+1,0,element);
+      //       this.listSize++;
+      //     }
+      //   };
+      //   this.contains = function(element){
+      //     var elemPos = this.find(element);
+      //     if(elemPos > -1) {
+      //       return true;
+      //     } else {
+      //       return false;
+      //     }
+      //   };
+      //   this.moveTo = function(position){
+      //     this.pos = position
+      //   };
+      //   this.getElem = function(){
+      //     return this.listElements[this.pos];
+      //   };
+      //   this.previous = function(){
+      //     return this.listElements[--this.pos];
+      //   };
+      //   this.next = function(){
+      //     return this.listElements[this.pos++];
+      //   };
+      //   this.front = function(){
+      //     this.pos = 0;
+      //   }
+      //   this.end = function(){
+      //     this.pos = this.listSize-1;
+      //   }
+      // }
 
     </script>
 </body>
