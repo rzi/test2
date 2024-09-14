@@ -51,7 +51,6 @@
         url.searchParams.set('start', startValue);
         fetch(url);
       }
-      
       function setStop() {
         var stopValue = document.getElementById("calendar").value;
         console.log("Stop value = " + stopValue );
@@ -76,7 +75,6 @@
         setTimeout("zegar()", 1000);
       }
       zegar();
-
       flatpickr("#calendar", {
         enableTime: true,
         dateFormat: "Y-m-d H:i",
@@ -85,13 +83,12 @@
       var items1  = new Array();
       var item ="";
       // console.log("Lista " +list.view());
-
       function currentloginid() {
         return fetch('http://192.168.100.7/eeprom')
           .then(response => response.json())
       }
-        const storedPromise = currentloginid();
-        storedPromise.then(storedPromise => {
+      const storedPromise = currentloginid();
+      storedPromise.then(storedPromise => {
           for (const key in storedPromise) {
             item="";
             //console.log(`${key}`);
@@ -134,89 +131,23 @@
             // console.log(item);
             items1.push(item);
             console.log("item3 = " + items1);
-
-            // Znajdź kontener, do którego dodasz listę
             const listContainer = document.getElementById('list-container');
-            // Tworzenie elementu <ol> (numerowana lista)
             const ul = document.createElement('ul');
-            // Iterowanie po elementach listy
-            // items1.forEach((list) => {
-                const li = document.createElement('li'); // Tworzenie <li> dla każdego elementu
-                li.textContent = item; // Ustawienie tekstu w elemencie <li>
-                ul.appendChild(li); // Dodawanie <li> do <ol>
-            // });
-            // Dodanie <ol> do kontenera
+            const li = document.createElement('li'); // Tworzenie <li> dla każdego elementu
+            li.textContent = item; // Ustawienie tekstu w elemencie <li>
+            li.id=key;
+            // Dodanie obsługi zdarzenia 'click' dla każdego <li>
+            li.addEventListener('click', function(event) {
+              delItem(event.target.id);
+            });
+            ul.appendChild(li); // Dodawanie <li> do <ol>
             listContainer.appendChild(ul);
-            // console.log("item1 = " + items1);
           }
-          // list.append(item);
-          // console.log("item2 = "+ item);
-          // console.log(list.view());
-
         }
       )
-      // function List() {
-      //   this.listElements = [];
-      //   this.listSize = 0;
-      //   this.pos = 0;
-      //   this.append = function(element){
-      //     this.listElements[this.listSize++] = element;
-      //   };
-      //   this.find = function(element){
-      //     for (var i = 0; i < this.listElements.length; i++) {
-      //       if(this.listElements[i] == element){
-      //         return i;
-      //       } 
-      //     } return -1;
-      //   };
-      //   this.remove = function(element){
-      //     var elemPos = this.find(element)
-      //     if(elemPos > -1){
-      //       this.listElements.splice(elemPos,1);
-      //       this.listSize--;
-      //     }
-      //   };
-      //   this.length = function(){
-      //     return this.listSize;
-      //   };
-      //   this.view = function(){
-      //     return this.listElements;
-      //   };
-      //   this.insert = function(element, after){
-      //     var afterPos = this.find(after);
-      //     if(afterPos > -1){
-      //       this.listElements.splice(afterPos+1,0,element);
-      //       this.listSize++;
-      //     }
-      //   };
-      //   this.contains = function(element){
-      //     var elemPos = this.find(element);
-      //     if(elemPos > -1) {
-      //       return true;
-      //     } else {
-      //       return false;
-      //     }
-      //   };
-      //   this.moveTo = function(position){
-      //     this.pos = position
-      //   };
-      //   this.getElem = function(){
-      //     return this.listElements[this.pos];
-      //   };
-      //   this.previous = function(){
-      //     return this.listElements[--this.pos];
-      //   };
-      //   this.next = function(){
-      //     return this.listElements[this.pos++];
-      //   };
-      //   this.front = function(){
-      //     this.pos = 0;
-      //   }
-      //   this.end = function(){
-      //     this.pos = this.listSize-1;
-      //   }
-      // }
-
+      function delItem(item){
+        console.log(`Kliknięty element to: ${item}`);
+      }
     </script>
 </body>
 </html>
