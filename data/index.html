@@ -45,7 +45,7 @@
         var startValue = document.getElementById("calendar").value;
         console.log("Start value = " + startValue );
         const url = new URL('http://192.168.100.7/');
-        url.searchParams.set('start', '1');
+        url.searchParams.set('start', startValue);
         fetch(url);
       }
       
@@ -54,7 +54,7 @@
         console.log("Stop value = " + stopValue );
 
         const url = new URL('http://192.168.100.7/');
-        url.searchParams.set('stop', '1');
+        url.searchParams.set('stop', stopValue);
         fetch(url);
       }
       function zegar() {
@@ -78,6 +78,57 @@
         enableTime: true,
         dateFormat: "Y-m-d H:i",
       }); // flatpickr
+
+      // fetch EEprom data
+      // (async () => {
+          // const res = await fetch("http://192.168.100.7/eeprom");
+          //var aa = res.json();
+          //console.log(aa);
+          // console.log(res.data);
+          // console.log(JSON.stringify(res))
+          //console.log(((res.json())));
+          // const data = res.data
+          //  console.log(res.text());
+          // console.log(await currentloginid());
+          // for (const key in res.text()) {
+          //     console.log(`${key}: ${res.text().[key]}`);
+
+          // }
+      // })();
+      
+      // function currentloginid() {
+      //   return fetch('http://192.168.100.7/eeprom', {
+      //       method: 'GET',
+      //     })
+      //     .then(function(response) {
+      //       return response.json();
+      //     })
+      //     .then(function(data) {
+      //       var userid = JSON.parse(data);
+      //       console.log(userid);
+      //       return userid;
+      //     })
+      // }
+      // var aa =  currentloginid()
+      // console.log(aa);
+
+      function currentloginid() {
+        return fetch('http://192.168.100.7/eeprom')
+          .then(response => response.json())
+      }
+      const storedPromise = currentloginid();
+      storedPromise.then(storedPromise => {
+        //  console.log(JSON.parse(storedPromise))
+          for (const key in storedPromise) {
+            console.log(`${key}: ${storedPromise[key]}`);
+            var aa =storedPromise[key]
+            for (const key2 in aa) {
+            console.log(`${key2}: ${aa[key2]}`);
+            }
+          }
+      }
+      )
+
     </script>
 </body>
 </html>
