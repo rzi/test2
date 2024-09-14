@@ -94,13 +94,42 @@
         storedPromise.then(storedPromise => {
           for (const key in storedPromise) {
             item="";
-            console.log(`${key}`);
+            //console.log(`${key}`);
             // item =item + key.toString() + " " ;
-            var aa =storedPromise[key]
-            for (const key2 in aa) {
-              //console.log(`${key2}: ${aa[key2]}`);
-              item =item + key2.toString() + " " + aa[key2] +" ";
+            let object = storedPromise[key];
+            //console.log("object jest typu: " + typeof(object));
+            for (const key2 in object) {
+              // console.log( `${key2} ${object[key2]}`);
+              // console.log("Key2 jest typu " + typeof(key2)+ " to "+ key2);
+              // console.log("object[key2] jest typu " + typeof(object[key2]) +" to "+ object[key2]);
+              if (key2 == "type" && object[key2]==1){
+                item = "start ";
+              }else if(key2 == "type" && object[key2]==0){
+                item = "stop ";
+              } else if(key2 == "type" && object[key2]==-1){
+                return
+              }
+              if (key2 == "year"){
+                item = item + object[key2]
+              }
+              if (key2 =="month") {
+                item = item + "/"+object[key2];
+              }
+              if (key2 =="day") {
+                item = item + "/"+object[key2]+" godzina ";
+              }
+              if (key2 =="hour") {
+                item = item +object[key2] +":";
+              }
+              if (key2 =="minute") {
+                if (object[key2]<10){
+                  item = item +"0"+ object[key2];
+                }else{
+                item = item + object[key2] ;
+                }
+              }
               // console.log(item);
+              //item =item + key2.toString() + " " + object[key2] +" ";
             }
             // console.log(item);
             items1.push(item);
