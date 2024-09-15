@@ -253,28 +253,20 @@ void setup(){
     //List all parameters
     int params = request->params();
     byte myArry[EEPROM_SIZE];
+    byte myArry2[EEPROM_SIZE];
+
     for (int i = 0; i < EEPROM_SIZE; i++) {
       EEPROM.get(i, myArry[i]);  // Odczytujemy rekord
-      Serial.print( "myArry ");
-      Serial.println( myArry[i]);
+      // Serial.print( "myArry ");
+      // Serial.println( myArry[i]);
     }
     for (int i = 0; i < params; i++)
     {
       AsyncWebParameter* p = request->getParam(i);
       Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
-      // format 2024-09-01 12:00
-        String name =String(p->name().c_str());
-        String value = String(p->value().c_str());
-        Serial.print( "name ");
-        Serial.println( name);
-        Serial.print( "value ");
-        Serial.println( value);
-
+      String name =String(p->name().c_str());
+      String value = String(p->value().c_str());
       if (String(p->name().c_str()) == "index"){
-        Serial.print( "del index ");
-        Serial.println( name);
-        Serial.print( "del value ");
-        Serial.println( value);
         myIndex = p->value().charAt(0) ;
         Serial.println( "del value myIndex " + myIndex);
         int myIndex2 = myIndex.toInt();
@@ -291,6 +283,7 @@ void setup(){
         Serial.print( "adres2 ");
         Serial.println(address2);
         for (int i = address * RECORD_SIZE; i < address2; i++) {
+          
           Serial.print("Kasowanie komrki ");
           Serial.println(i);
           // EEPROM.write(record1, 0xFF);  // Zapisujemy 0xFF (czyli "pusty" EEPROM)                 
@@ -301,11 +294,8 @@ void setup(){
       } else{
         Serial.print( "błąd ");
       }   
-
     }
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
-
-
   });
   server.on("/erase", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get erase");
