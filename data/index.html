@@ -30,13 +30,17 @@
   </div>
   <br>
 
-  <button onClick= setStart()> Ustaw Start</button>
-  <button onClick= setStop()> Ustaw Stop</button>
+  <button onClick = setStart()> Ustaw Start</button>
+  <button onClick = setStop()> Ustaw Stop</button>
   <p> Lista zaprogramowana</p>
   <div id="list-container"></div>
+  <button onClick = eraseEEprom()> Kasuj EEprom</button>
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>     
+    <script>  
+      var pickrDate;
+      document.getElementById("calendar").value =pickrDate;
+
       var year, month, day ,hour, minute, seconds
       function on() {
         fetch ("http://192.168.100.7/led2on")
@@ -49,7 +53,11 @@
         console.log("Start value = " + startValue );
         const url = new URL('http://192.168.100.7/');
         url.searchParams.set('start', startValue);
-        fetch(url);
+        if (startValue !=""){
+          fetch(url).then(location.reload());
+        }else{
+          alert("Wybierz datę !")
+        }
       }
       function setStop() {
         var stopValue = document.getElementById("calendar").value;
@@ -57,7 +65,11 @@
 
         const url = new URL('http://192.168.100.7/');
         url.searchParams.set('stop', stopValue);
-        fetch(url);
+        if (stopValue !=""){
+          fetch(url).then(location.reload());
+        }else{
+          alert("Wybierz datę !")
+        }
       }
       function zegar() {
         var data = new Date();
@@ -77,7 +89,12 @@
       zegar();
       flatpickr("#calendar", {
         enableTime: true,
+        defaultDate: new Date(),
         dateFormat: "Y-m-d H:i",
+        onChange: function(selectedDates, dateStr, instance) {
+            console.log(`Wybrano datę: ${dateStr}`);
+            flatpickr =dateStr;
+        }
       }); // flatpickr
       // var list = new List;
       var items1  = new Array();
@@ -130,7 +147,7 @@
             }
             // console.log(item);
             items1.push(item);
-            console.log("item3 = " + items1);
+            // console.log("item3 = " + items1);
             const listContainer = document.getElementById('list-container');
             const ul = document.createElement('ul');
             const li = document.createElement('li'); // Tworzenie <li> dla każdego elementu
@@ -143,10 +160,33 @@
             ul.appendChild(li); // Dodawanie <li> do <ol>
             listContainer.appendChild(ul);
           }
-        }
+        }    
       )
       function delItem(item){
         console.log(`Kliknięty element to: ${item}`);
+        const url = new URL('http://192.168.100.7/del');
+        url.searchParams.set('index', item);
+        fetch(url)
+        .then(response => {
+          response.text();
+          window.location.reload();
+        })
+        
+      }
+      function eraseEEprom(){
+        if (confirm('Czy chcesz skasowac cały eeprom?')) {
+          console.log( "erase eeprom");
+          const url = new URL('http://192.168.100.7/erase');
+          fetch(url)
+          .then(response => {
+            response.text();
+            window.location.reload();
+          })
+        } else {
+          // Do nothing!
+          console.log('EEprom nie został skasowany');
+        }
+
       }
     </script>
 </body>

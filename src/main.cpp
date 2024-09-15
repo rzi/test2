@@ -49,9 +49,7 @@ String processor(const String& var){
 #define EEPROM_SIZE 512           // Rozmiar EEPROM (dla ESP8266)
 #define RECORD_SIZE sizeof(LogRecord) // Wielkość jednego rekordu
 #define MAX_RECORDS (EEPROM_SIZE / RECORD_SIZE) // Maksymalna liczba rekordów
-
 StaticJsonDocument<64> doc;
-
 // Struktura przechowująca dane, które chcemy zapisywać
 struct LogRecord {
   int type;
@@ -81,7 +79,6 @@ void saveRecord(LogRecord record) {
     Serial.println("EEPROM pełne, nie można zapisać więcej danych.");
   }
 }
-
 // Funkcja odczytu wszystkich zapisanych rekordów z EEPROM
 void readAllRecords() {
   LogRecord record;
@@ -104,7 +101,6 @@ void readAllRecords() {
     Serial.println(record.minute);
   }
 }
-
 // Funkcja wyczyszczenia EEPROM (reset)
 void clearEEPROM() {
   for (int i = 0; i < EEPROM_SIZE; i++) {
@@ -118,7 +114,6 @@ void clearEEPROM() {
 void setup(){
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
-
   // Initialize SPIFFS
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -139,7 +134,6 @@ void setup(){
     delay(1000);
     Serial.println("Connecting to WiFi..");
   }
-
   // Print ESP32 Local IP Address
   Serial.println(WiFi.localIP());
   // Initialize a NTPClient to get time
@@ -160,6 +154,7 @@ void setup(){
     String day;
     String hour;
     String minute;
+
     for (int i = 0; i < params; i++)
     {
       AsyncWebParameter* p = request->getParam(i);
@@ -219,42 +214,104 @@ void setup(){
   server.on("/eeprom", HTTP_GET, [](AsyncWebServerRequest *request){
     LogRecord record;
     String output;
-  for (int i = 0; i <= MAX_RECORDS; i++) {
+    for (int i = 0; i <= MAX_RECORDS; i++) {
       int address = i * RECORD_SIZE;
       EEPROM.get(address, record);  // Odczytujemy rekord
       // String myDoc;
       // myDoc = myDoc+String(i);
       JsonObject myDoc = doc.createNestedObject(i);
-      Serial.print("Rekord ");
-      Serial.print(i);
-      Serial.print(": Typ: ");
-      Serial.print(record.type);
+      // Serial.print("Rekord ");
+      // Serial.print(i);
+      // Serial.print(": Typ: ");
+      // Serial.print(record.type);
       myDoc["type"] = record.type;
-      Serial.print(", Year: ");
-      Serial.print(record.year);
+      // Serial.print(", Year: ");
+      // Serial.print(record.year);
       myDoc["year"] = record.year;
-      Serial.print(", Month: ");
-      Serial.print(record.month);
+      // Serial.print(", Month: ");
+      // Serial.print(record.month);
       myDoc["month"] = record.month;
-      Serial.print(", Day: ");
-      Serial.print(record.day);
+      // Serial.print(", Day: ");
+      // Serial.print(record.day);
       myDoc["day"] =record.day;
-      Serial.print(", Hour: ");
-      Serial.print(record.hour);
+      // Serial.print(", Hour: ");
+      // Serial.print(record.hour);
       myDoc["hour"] = record.hour;
-      Serial.print(", Minute: ");
-      Serial.println(record.minute);
+      // Serial.print(", Minute: ");
+      // Serial.println(record.minute);
       myDoc["minute"] = record.minute;
       
       serializeJson(doc, output);
     }
-
-    Serial.print("json output: ");
-    Serial.println(output);
-    
+    // Serial.print("json output: ");
+    // Serial.println(output);
     request->send(200, "application/json", output);
   });
+  server.on("/del", HTTP_GET, [](AsyncWebServerRequest *request){
+    String myIndex;
+    Serial.println("get del");
+    //List all parameters
+    int params = request->params();
+    byte myArry[EEPROM_SIZE];
+    for (int i = 0; i < EEPROM_SIZE; i++) {
+      EEPROM.get(i, myArry[i]);  // Odczytujemy rekord
+      Serial.print( "myArry ");
+      Serial.println( myArry[i]);
+    }
+    for (int i = 0; i < params; i++)
+    {
+      AsyncWebParameter* p = request->getParam(i);
+      Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+      // format 2024-09-01 12:00
+        String name =String(p->name().c_str());
+        String value = String(p->value().c_str());
+        Serial.print( "name ");
+        Serial.println( name);
+        Serial.print( "value ");
+        Serial.println( value);
 
+      if (String(p->name().c_str()) == "index"){
+        Serial.print( "del index ");
+        Serial.println( name);
+        Serial.print( "del value ");
+        Serial.println( value);
+        myIndex = p->value().charAt(0) ;
+        Serial.println( "del value myIndex " + myIndex);
+        int myIndex2 = myIndex.toInt();
+        Serial.print( "del value myIndex2 ");
+        Serial.println(myIndex2);
+        Serial.print( "MAX_RECORDS ");
+        Serial.println(MAX_RECORDS);
+        Serial.print( "RECORD_SIZE ");
+        Serial.println(RECORD_SIZE);
+        int address = myIndex2;
+        Serial.print( "adres ");
+        Serial.println(address);
+        unsigned long address2 =(address + 1 )*RECORD_SIZE;
+        Serial.print( "adres2 ");
+        Serial.println(address2);
+        for (int i = address * RECORD_SIZE; i < address2; i++) {
+          Serial.print("Kasowanie komrki ");
+          Serial.println(i);
+          // EEPROM.write(record1, 0xFF);  // Zapisujemy 0xFF (czyli "pusty" EEPROM)                 
+          currentRecordIndex =currentRecordIndex -1;
+        }
+        // // EEPROM.commit();
+        // Serial.println("EEPROM ma rekordw " + currentRecordIndex);
+      } else{
+        Serial.print( "błąd ");
+      }   
+
+    }
+    request->send(SPIFFS, "/index.html", "text/html", false, processor); 
+
+
+  });
+  server.on("/erase", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("get erase");
+    clearEEPROM();
+    request->send(SPIFFS, "/index.html", "text/html", false, processor); 
+  });
   // Start server
   server.begin();
   initEEPROM();                    // Inicjalizujemy EEPROM
@@ -320,7 +377,7 @@ void loop(){
     Serial.println("Odczyt eeprom");   
     readAllRecords();
   }
-  digitalWrite(ledPin, HIGH);
+  // digitalWrite(ledPin, HIGH);
   delay(750);
-  digitalWrite(ledPin, LOW);
+  // digitalWrite(ledPin, LOW);
 }
