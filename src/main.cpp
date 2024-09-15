@@ -46,7 +46,7 @@ String processor(const String& var){
   return String();
 }
 
-#define EEPROM_SIZE 512           // Rozmiar EEPROM (dla ESP8266)
+#define EEPROM_SIZE 450           // Rozmiar EEPROM (dla ESP8266)
 #define RECORD_SIZE sizeof(LogRecord) // Wielkość jednego rekordu
 #define MAX_RECORDS (EEPROM_SIZE / RECORD_SIZE) // Maksymalna liczba rekordów
 StaticJsonDocument<64> doc;
@@ -182,7 +182,7 @@ void setup(){
         minute = p->value().charAt(14) ;
         minute = minute + p->value().charAt(15);
         Serial.println(minute);
-        Serial.println("");
+        
 
       if (String(p->name().c_str()) == "start"){
       LogRecord record1 = { 1, year.toInt(), month.toInt(), day.toInt(), hour.toInt(), minute.toInt()};
@@ -192,6 +192,8 @@ void setup(){
       saveRecord(record1); 
       }   
     }
+    Serial.print("currentRecordIndex ");
+    Serial.println(currentRecordIndex );
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
   // Route to load style.css file
@@ -248,7 +250,7 @@ void setup(){
     request->send(200, "application/json", output);
   });
   server.on("/del", HTTP_GET, [](AsyncWebServerRequest *request){
-    String myIndex;
+    String myIndexString;
     Serial.println("get del");
     //List all parameters
     int params = request->params();
@@ -260,37 +262,54 @@ void setup(){
       // Serial.print( "myArry ");
       // Serial.println( myArry[i]);
     }
-    for (int i = 0; i < params; i++)
-    {
+    for (int i = 0; i < params; i++){
       AsyncWebParameter* p = request->getParam(i);
       Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
       String name =String(p->name().c_str());
       String value = String(p->value().c_str());
       if (String(p->name().c_str()) == "index"){
-        myIndex = p->value().charAt(0) ;
-        Serial.println( "del value myIndex " + myIndex);
-        int myIndex2 = myIndex.toInt();
-        Serial.print( "del value myIndex2 ");
-        Serial.println(myIndex2);
+        myIndexString = p->value().charAt(0) ;
+        int myIndex = myIndexString.toInt();
         Serial.print( "MAX_RECORDS ");
         Serial.println(MAX_RECORDS);
         Serial.print( "RECORD_SIZE ");
         Serial.println(RECORD_SIZE);
-        int address = myIndex2;
+        int address = 0;
         Serial.print( "adres ");
         Serial.println(address);
-        unsigned long address2 =(address + 1 )*RECORD_SIZE;
-        Serial.print( "adres2 ");
-        Serial.println(address2);
-        for (int i = address * RECORD_SIZE; i < address2; i++) {
-          
-          Serial.print("Kasowanie komrki ");
-          Serial.println(i);
-          // EEPROM.write(record1, 0xFF);  // Zapisujemy 0xFF (czyli "pusty" EEPROM)                 
-          currentRecordIndex =currentRecordIndex -1;
+        Serial.print( "myIndex ");
+        Serial.println(myIndex);
+        for (int j=0 ;j< EEPROM_SIZE ;j++){
+          if (myIndex == 0){
+          myArry2[j] = myArry[j+RECORD_SIZE];
+          Serial.print(j);
+          Serial.print( " myArry[j]  ");
+          Serial.print(myArry[j]);
+          Serial.print( " myArry2[j]  ");
+          Serial.println(myArry[j+myIndex*RECORD_SIZE]);
+
+          }else{
+          myArry2[j] = myArry[j+myIndex*RECORD_SIZE];
+          Serial.print( "j = ");
+          Serial.print(j);
+          Serial.print( " myArry[j]  ");
+          Serial.print(myArry[j]);
+          Serial.print( " myArry2[j]  ");
+          Serial.println(myArry[j+myIndex*RECORD_SIZE]);
+          }
+
         }
-        // // EEPROM.commit();
-        // Serial.println("EEPROM ma rekordw " + currentRecordIndex);
+        for (int i = 0 ; i < EEPROM_SIZE; i++) {
+          EEPROM.write(i, myArry2[i]);                 
+        }
+        EEPROM.commit();
+          if (currentRecordIndex >0 ) {
+            currentRecordIndex =currentRecordIndex -1;
+          }
+          Serial.print("currentRecordIndex " );
+          Serial.println(currentRecordIndex );
+          Serial.print("EEPROM ma rekordw " );
+          Serial.println(currentRecordIndex);
       } else{
         Serial.print( "błąd ");
       }   
