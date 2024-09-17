@@ -59,6 +59,7 @@ struct LogRecord {
   int hour;
   int minute;
 };
+
 // Inicjalizacja EEPROM
 void initEEPROM() {
   EEPROM.begin(EEPROM_SIZE);     // Rozpoczynamy pracę z EEPROM
@@ -144,6 +145,7 @@ void setup(){
   // GMT -1 = -3600
   // GMT 0 = 0
   timeClient.setTimeOffset(2);
+  LogRecord record;
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get");
@@ -281,21 +283,25 @@ void setup(){
         Serial.println(myIndex);
         for (int j=0 ;j< EEPROM_SIZE ;j++){
           if (myIndex == 0){
-          myArry2[j] = myArry[j+RECORD_SIZE];
-          Serial.print(j);
-          Serial.print( " myArry[j]  ");
-          Serial.print(myArry[j]);
-          Serial.print( " myArry2[j]  ");
-          Serial.println(myArry[j+myIndex*RECORD_SIZE]);
+          if (j < EEPROM_SIZE -RECORD_SIZE ){
+            myArry2[j] = myArry[j+RECORD_SIZE];
+          } else{
+            myArry2[j] = myArry[j];
+          }
+          // Serial.print(j);
+          // Serial.print( " myArry[j]  ");
+          // Serial.print(myArry[j]);
+          // Serial.print( " myArry2[j]  ");
+          // Serial.println(myArry[j+myIndex*RECORD_SIZE]);
 
           }else{
           myArry2[j] = myArry[j+myIndex*RECORD_SIZE];
-          Serial.print( "j = ");
-          Serial.print(j);
-          Serial.print( " myArry[j]  ");
-          Serial.print(myArry[j]);
-          Serial.print( " myArry2[j]  ");
-          Serial.println(myArry[j+myIndex*RECORD_SIZE]);
+          // Serial.print( "j = ");
+          // Serial.print(j);
+          // Serial.print( " myArry[j]  ");
+          // Serial.print(myArry[j]);
+          // Serial.print( " myArry2[j]  ");
+          // Serial.println(myArry[j+myIndex*RECORD_SIZE]);
           }
 
         }
@@ -308,8 +314,8 @@ void setup(){
           }
           Serial.print("currentRecordIndex " );
           Serial.println(currentRecordIndex );
-          Serial.print("EEPROM ma rekordw " );
-          Serial.println(currentRecordIndex);
+          // Serial.print("EEPROM ma rekordw " );
+          // Serial.println(currentRecordIndex);
       } else{
         Serial.print( "błąd ");
       }   
@@ -342,7 +348,7 @@ void loop(){
     Serial.print("Formatted Time: ");
     Serial.println(formattedTime);  
 
-    int currentHour = timeClient.getHours();
+    int currentHour = timeClient.getHours()+2;
     Serial.print("Hour: ");
     Serial.println(currentHour);  
 
@@ -384,8 +390,55 @@ void loop(){
     Serial.println("");
 
     Serial.println("Odczyt eeprom");   
-    readAllRecords();
+    // readAllRecords();
+
+    // RTC
+     LogRecord record[100];
+      for (int i = 0; i <= MAX_RECORDS; i++) {
+        int address = i * RECORD_SIZE;
+        EEPROM.get(address, record[i]);  // Odczytujemy rekord
+        Serial.print("Rekord ");
+        Serial.print(i);
+        Serial.print(": Typ: ");
+        Serial.print(record[i].type);
+        Serial.print(", Year: ");
+        Serial.print(record[i].year);
+        Serial.print(", Month: ");
+        Serial.print(record[i].month);
+        Serial.print(", Day: ");
+        Serial.print(record[i].day);
+        Serial.print(", Hour: ");
+        Serial.print(record[i].hour);
+        Serial.print(", Minute: ");
+        Serial.println(record[i].minute);
+      }
+    
+      for (int i=0 ; i < 20; i++){
+
+        if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type==1){
+          //set
+          Serial.println("załączeine"); 
+          digitalWrite(ledPin, LOW);  
+          delay(750);
+        }else if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type == 0){
+        // unset
+        digitalWrite(ledPin, HIGH); 
+        Serial.println("wyłączeine"); 
+        } 
+        if (record[i].type >0 ||record[i].type ==0 ){
+          Serial.print("record H: ");
+          Serial.print(record[i].hour);
+          Serial.print(" minute M: ");
+          Serial.println(record[i].minute);
+
+          Serial.print("current H: ");
+          Serial.print(currentHour);
+          Serial.print(" current M: ");
+          Serial.println(currentMinute);
+        }
+      }
   }
+    // }
   // digitalWrite(ledPin, HIGH);
   delay(750);
   // digitalWrite(ledPin, LOW);
