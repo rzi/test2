@@ -202,6 +202,9 @@ void setup(){
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
+  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/main.js", "text/html");
+  });
   // Route to set GPIO to HIGH
   server.on("/led2on", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPin, LOW);    
