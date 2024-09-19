@@ -79,17 +79,17 @@ storedPromise.then(storedPromise => {
           item = item + object[key2]
         }
         if (key2 =="month") {
-          item = item + "/"+object[key2];
+          item = item + "/"+((object[key2] <10) ? "0"+object[key2]: object[key2]);
         }
         if (key2 =="day") {
-          item = item + "/"+object[key2]+" godzina ";
+          item = item + "/"+((object[key2] <10) ? "0" + object[key2]: object[key2]) + " godzina ";
         }
         if (key2 =="hour") {
-          item = item +object[key2] +":";
+          item = item + object[key2] +":";
         }
         if (key2 =="minute") {
           if (object[key2]<10){
-            item = item +"0"+ object[key2];
+            item = item +((object[key2] <10) ? "0"+object[key2]: object[key2]);
           }else{
           item = item + object[key2] ;
           }
