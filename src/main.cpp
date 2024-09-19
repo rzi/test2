@@ -46,10 +46,10 @@ String processor(const String& var){
   return String();
 }
 
-#define EEPROM_SIZE 450           // Rozmiar EEPROM (dla ESP8266)
+#define EEPROM_SIZE 512           // Rozmiar EEPROM (dla ESP8266)
 #define RECORD_SIZE sizeof(LogRecord) // Wielkość jednego rekordu
 #define MAX_RECORDS (EEPROM_SIZE / RECORD_SIZE) // Maksymalna liczba rekordów
-StaticJsonDocument<64> doc;
+JsonDocument doc;
 // Struktura przechowująca dane, które chcemy zapisywać
 struct LogRecord {
   int type;
@@ -184,8 +184,6 @@ void setup(){
         minute = p->value().charAt(14) ;
         minute = minute + p->value().charAt(15);
         Serial.println(minute);
-        
-
       if (String(p->name().c_str()) == "start"){
       LogRecord record1 = { 1, year.toInt(), month.toInt(), day.toInt(), hour.toInt(), minute.toInt()};
       saveRecord(record1); 
@@ -334,15 +332,13 @@ void setup(){
   server.begin();
   initEEPROM();                    // Inicjalizujemy EEPROM
   readAllRecords();
-  //clearEEPROM();
-  //readAllRecords();
 }
 void loop(){
   timeClient.update();
   int sek = timeClient.getSeconds();
   Serial.println(sek);
    
-  if (sek ==0){
+  if (sek == 0){
     time_t epochTime = timeClient.getEpochTime();
     Serial.print("Epoch Time: ");
     Serial.println(epochTime);
@@ -396,7 +392,7 @@ void loop(){
     // readAllRecords();
 
     // RTC
-     LogRecord record[100];
+     LogRecord record[MAX_RECORDS];
       for (int i = 0; i <= MAX_RECORDS; i++) {
         int address = i * RECORD_SIZE;
         EEPROM.get(address, record[i]);  // Odczytujemy rekord
@@ -414,26 +410,21 @@ void loop(){
         Serial.print(record[i].hour);
         Serial.print(", Minute: ");
         Serial.println(record[i].minute);
-      }
-    
-      for (int i=0 ; i < 20; i++){
-
-        if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type==1){
+         if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type==1){
           //set
           Serial.println("załączeine"); 
           digitalWrite(ledPin, LOW);  
-          delay(750);
+          // delay(750);
         }else if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type == 0){
         // unset
         digitalWrite(ledPin, HIGH); 
         Serial.println("wyłączeine"); 
         } 
-        if (record[i].type >0 ||record[i].type ==0 ){
+        if (record[i].type >0 || record[i].type ==0 ){
           Serial.print("record H: ");
           Serial.print(record[i].hour);
           Serial.print(" minute M: ");
           Serial.println(record[i].minute);
-
           Serial.print("current H: ");
           Serial.print(currentHour);
           Serial.print(" current M: ");
@@ -441,8 +432,5 @@ void loop(){
         }
       }
   }
-    // }
-  // digitalWrite(ledPin, HIGH);
   delay(750);
-  // digitalWrite(ledPin, LOW);
 }
