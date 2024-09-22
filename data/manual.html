@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual</title>
+</head>
+<body>
+    <h2>Załączanie manualne</h2>
+    <div> Status: <span id="status">nieaktywny </span></div>
+    <br><br>
+    <label for="set"> Załącz na: </label>
+    <input type="number" name="textEdit" id="setON" value="1">
+    <label for="set"> minut</label>
+    <br><br>
+    <label for="reset"> Wyłącz na: </label>
+    <input type="number" name="textEdit2" id="setOFF" value="2">
+    <label for="reset"> minut</label>
+    <br><br>
+    <button onclick=btnOn()>Rozpocznij</button>
+    <button onclick=btnOff()>Zatrzymaj</button>
+    <script>
+        function btnOn(){
+            console.log("click start");
+            const status = 1;
+            var startValue = document.getElementById("setON").value;
+            var stoptValue = document.getElementById("setOFF").value;
+            console.log("Start value = " + startValue +" stop value = "+stoptValue);
+            const url = new URL('http://192.168.100.7/manual2');
+            url.searchParams.append('start', startValue);
+            url.searchParams.append('stop', stoptValue);
+            url.searchParams.append('status', status);
+            console.log("url " + url.search);
+            if (startValue !="" && stoptValue !="" ){
+                fetch(url)
+                .then((response) => response.json())
+                .then((text) => {
+                    let status = parseInt(text);
+                    console.log("status "  +status);
+                    var myspan = document.getElementById('status');
+                    if (status == 1){
+                        myspan.innerText = "aktywny";
+                    }else{
+                        myspan.innerText = "nieaktywny";
+                    }
+                });
+            }else{
+                alert("ustawe czs włączenia i wyłączenia !")
+            }
+        }
+        function btnOff(){
+            console.log("click stop");
+            const status = 0;
+            var startValue = document.getElementById("setON").value;
+            var stoptValue = document.getElementById("setOFF").value;
+            console.log("Start value = " + startValue +" stop value = "+stoptValue);
+            const url = new URL('http://192.168.100.7/manual2');
+            url.searchParams.append('start', startValue);
+            url.searchParams.append('stop', stoptValue);
+            url.searchParams.append('status', status);
+            console.log("url " + url.search);
+            if (startValue !="" && stoptValue !="" ){
+                fetch(url)
+                .then((response) => response.json())
+                .then((text) => {
+                    let status = parseInt(text);
+                    console.log("status "  +status);
+                    var myspan = document.getElementById('status');
+                    if (status == 1){
+                        myspan.innerText = "aktywny";
+                    }else{
+                        myspan.innerText = "nieaktywny";
+                    }
+                });
+            }else{
+                alert("ustawe czs włączenia i wyłączenia !")
+            }
+        }
+
+    </script>
+
+</body>
+</html>
