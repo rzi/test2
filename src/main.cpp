@@ -145,6 +145,12 @@ void setup(){
   // GMT 0 = 0
   timeClient.setTimeOffset(2);
   LogRecord record;
+    // Obsługa favicon
+  server.on("/favicon2.png", HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/favicon2.png", "image/png");
+    Serial.println("favicon");
+    request->send(response);
+  });
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get");
@@ -382,6 +388,7 @@ void setup(){
     clearEEPROM();
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
+  //  server.serveStatic("200", SPIFFS, "/favicon.ico");
   // Start server
   server.begin();
   initEEPROM();                    // Inicjalizujemy EEPROM
