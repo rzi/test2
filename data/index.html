@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!-- 
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com  
--->
 <html>
 <head>
   <meta charset="UTF-8">
@@ -10,10 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <!-- <link rel='icon' type='image/x-icon' href="/favicon.ico"> -->
- <!-- <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAERABAAEAEBAQABAQEBABAAEAEQARABAQABAQABAAAQARAAEQARAAAAAAAAAAAAAAAAAAAAAAEREAEQAQAAAQAAEAEBAAABAAAAAQEAAAERAAEQAREAAQAAEAABABABAAAQAQEAEAEREAEQAREAAAAAAAAAAAD//wAA2N0AAKuqAADdmQAArrsAANnMAAD//wAA//8AAIZvAAC9rwAAv68AAI5jAAC97QAAva0AAIZjAAD//wAA" rel="icon" type="image/x-icon"> -->
- <link rel="icon" href="/favicon2.png" type="image/png">
- <link href="./normalize.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="/favicon2.png" type="image/png">
+  <link href="./normalize.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <nav>
@@ -27,11 +21,17 @@
       <ul class="navigation__list">
         <li class="navigation__item">
           <a href="./"
-            ><strong>Main page </strong> <br />
+            ><strong>Strona główna </strong> <br />
           </a>
         </li>
         <li class="navigation__item">
           <a href="./manual"
+            ><strong>Ręczne sterowania </strong> <br />
+            <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+          </a>
+        </li>
+        <li class="navigation__item">
+          <a href="./stopwatch"
             ><strong>Minutnik </strong> <br />
             <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
           </a>
@@ -44,11 +44,7 @@
     <input type="text" name="czas" size="10" />
   </form>
   <br>
-  <div > Manualnie </div>
-  <br>
-  <button onclick=on()> Włącz</button> 
-  <button onclick=off()> Wyłącz</button>
-  <br><br><br>
+
   <div> Programowo</div>
   <br>
   <div class="group">
@@ -60,7 +56,6 @@
   <p> Lista zaprogramowana</p>
   <div id="list-container"></div>
   <button onClick = eraseEEprom()> Kasuj EEprom</button>
-
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="./main.js"></script>
 </body>

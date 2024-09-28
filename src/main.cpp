@@ -201,6 +201,61 @@ void setup(){
     Serial.println(currentRecordIndex );
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
+    server.on("/stopwatch", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("get stopwatch");
+    //List all parameters
+    int params = request->params();
+    Serial.print("params = ");
+    Serial.println(params);
+
+    for (int i = 0; i < params; i++)
+    {
+      AsyncWebParameter* p = request->getParam(i);
+      Serial.printf("GET %s %s\n", p->name().c_str(), p->value().c_str());
+        String start =String(p->name().c_str());
+        String stop = String(p->value().c_str());
+        Serial.print( "start ");
+        Serial.println( start);
+        Serial.print( "stop ");
+        Serial.println(stop);
+    }
+    request->send(SPIFFS, "/stopwatch.html", "text/html", false, processor); 
+  });
+    server.on("/stopwatch2", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("get manual2");
+    int params = request->params();
+    Serial.print("params = ");
+    Serial.println(params);
+    int status;
+    int start;
+    int stop;
+
+    for (int i = 0; i < params; i++)
+    {
+      AsyncWebParameter* p = request->getParam(i);
+      Serial.printf("GET %s %s \n", p->name().c_str(), p->value().c_str());
+        String key =String(p->name().c_str());
+        String value = String(p->value().c_str());
+
+        Serial.print( "key ");
+        Serial.println( key);
+        Serial.print( "value ");
+        Serial.println(value);
+        Serial.println("------");
+        if (key == "start") {
+          start = value.toInt();
+        } else if( key =="stop"){
+          stop =value.toInt();
+        }else if (key == "status")
+        {
+          status = value.toInt();
+        }else  
+        {
+           Serial.println("nieznana wartosc");
+        }
+    }
+    request->send(200, "application/json", String(status));
+  });
     server.on("/manual", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get manual");
     //List all parameters
@@ -259,6 +314,9 @@ void setup(){
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
+  });
+    server.on("/normalize.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/normalize.css", "text/css");
   });
   server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/main.js", "text/html");

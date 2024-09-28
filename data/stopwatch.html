@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual</title>
+    <link href="./normalize.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="/favicon2.png" type="image/png">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <nav>
+    <button class="hamburger" aria-expanded="false">
+      <span class="sr-only">Otwórz/zamknij menu</span>
+      <span class="hamburger__box">
+        <span class="hamburger__inner"></span>
+      </span>
+    </button>
+    <div class="navigation">
+      <ul class="navigation__list">
+        <li class="navigation__item">
+          <a href="./"
+            ><strong>Strona główna </strong> <br />
+          </a>
+        </li>
+        <li class="navigation__item">
+          <a href="./manual"
+            ><strong>Ręczne sterowania </strong> <br />
+            <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+          </a>
+        </li>
+        <li class="navigation__item">
+          <a href="./stopwatch"
+            ><strong>Minutnik </strong> <br />
+            <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+    <h2>Minutnik </h2>
+    <div> Status: <span id="status">nieaktywny </span></div>
+    <br>
+    <label for="set"> Załącz na: </label>
+    <input class="manual" type="number" name="textEdit" id="setON" value="1">
+    <label for="set"> minut</label>
+    <br><br>
+    <label for="reset"> Wyłącz na: </label>
+    <input class="manual" type="number" name="textEdit2" id="setOFF" value="2">
+    <label for="reset"> minut</label>
+    <br><br>
+    <button onclick=btnOn()>Rozpocznij</button>
+    <button onclick=btnOff()>Zatrzymaj</button>
+    <script>
+        function btnOn(){
+            console.log("click start");
+            const status = 1;
+            var startValue = document.getElementById("setON").value;
+            var stoptValue = document.getElementById("setOFF").value;
+            console.log("Start value = " + startValue +" stop value = "+stoptValue);
+            const url = new URL('http://192.168.100.7/manual2');
+            url.searchParams.append('start', startValue);
+            url.searchParams.append('stop', stoptValue);
+            url.searchParams.append('status', status);
+            console.log("url " + url.search);
+            if (startValue !="" && stoptValue !="" ){
+                fetch(url)
+                .then((response) => response.json())
+                .then((text) => {
+                    let status = parseInt(text);
+                    console.log("status "  +status);
+                    var myspan = document.getElementById('status');
+                    if (status == 1){
+                        myspan.innerText = "aktywny";
+                    }else{
+                        myspan.innerText = "nieaktywny";
+                    }
+                });
+            }else{
+                alert("ustawe czs włączenia i wyłączenia !")
+            }
+        }
+        function btnOff(){
+            console.log("click stop");
+            const status = 0;
+            var startValue = document.getElementById("setON").value;
+            var stoptValue = document.getElementById("setOFF").value;
+            console.log("Start value = " + startValue +" stop value = "+stoptValue);
+            const url = new URL('http://192.168.100.7/manual2');
+            url.searchParams.append('start', startValue);
+            url.searchParams.append('stop', stoptValue);
+            url.searchParams.append('status', status);
+            console.log("url " + url.search);
+            if (startValue !="" && stoptValue !="" ){
+                fetch(url)
+                .then((response) => response.json())
+                .then((text) => {
+                    let status = parseInt(text);
+                    console.log("status "  +status);
+                    var myspan = document.getElementById('status');
+                    if (status == 1){
+                        myspan.innerText = "aktywny";
+                    }else{
+                        myspan.innerText = "nieaktywny";
+                    }
+                });
+            }else{
+                alert("ustawe czs włączenia i wyłączenia !")
+            }
+        }
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.navigation');      
+        const handleClick = () => {
+        hamburger.classList.toggle('hamburger--active');
+        hamburger.setAttribute('aria-expanded', hamburger.classList.contains('hamburger--active'));
+        nav.classList.toggle('navigation--active');
+        }
+        hamburger.addEventListener('click', handleClick);
+    </script>
+</body>
+</html>
