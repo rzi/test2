@@ -9,8 +9,12 @@ h1{
   padding: 2vh;
 }
 input{
-  width: 220px;
+  width:auto;
   text-align: center;
+}
+.manual{
+  width: 60px;;
+  text-align: left;
 }
 .button {
   display: inline-block;
@@ -44,4 +48,184 @@ input{
   font-size: 1.2rem;
   font-weight: bold;
   color: #034078
+}
+.hamburger {
+  padding: 10px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+}
+
+.hamburger,
+.navigation {
+  transition: visibility 0s 0.4s, -webkit-transform 0.3s 0.1s ease-in-out;
+  transition: transform 0.3s 0.1s ease-in-out, visibility 0s 0.4s;
+  transition: transform 0.3s 0.1s ease-in-out, visibility 0s 0.4s,
+    -webkit-transform 0.3s 0.1s ease-in-out;
+}
+
+/* .hamburger--active { */
+  /* -webkit-transform: translatex(350px);
+  transform: translatex(350px); */
+/* } */
+
+.hamburger__box {
+  width: 35px;
+  height: 24px;
+  display: inline-block;
+  position: relative;
+}
+
+.hamburger__inner {
+  width: 100%;
+  height: 3px;
+  background-color: black;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  transition: background-color 0.1s 0.2s ease-in-out;
+}
+
+.hamburger__inner::before,
+.hamburger__inner::after {
+  width: 100%;
+  height: 3px;
+  background-color:black;
+  position: absolute;
+  content: "";
+  left: 0;
+  transition: -webkit-transform 0.2s 0.2s ease-in-out;
+  transition: transform 0.2s 0.2s ease-in-out;
+  transition: transform 0.2s 0.2s ease-in-out,
+    -webkit-transform 0.2s 0.2s ease-in-out;
+}
+
+.hamburger__inner::before {
+  top: -10px;
+}
+
+.hamburger__inner::after {
+  top: 10px;
+}
+
+.hamburger--active .hamburger__inner {
+  background-color: transparent;
+}
+
+.hamburger--active .hamburger__inner:before {
+  -webkit-transform: translateY(10px) rotate(45deg);
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger--active .hamburger__inner:after {
+  -webkit-transform: translateY(-10px) rotate(-45deg);
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.navigation {
+  height: 100vh;
+  width: 290px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  -webkit-transform: translateX(-290px);
+  transform: translateX(-290px);
+
+}
+
+.navigation--active {
+  -webkit-transform: translateX(0px);
+  transform: translateX(0px);
+  transition: visibility 0s 0s, -webkit-transform 0.3s 0.1s ease-in-out;
+  transition: transform 0.3s 0.1s ease-in-out, visibility 0s 0s;
+  transition: transform 0.3s 0.1s ease-in-out, visibility 0s 0s,
+    -webkit-transform 0.3s 0.1s ease-in-out;
+  visibility: visible;
+}
+.navigation__list {
+  margin-top: 50px;
+  list-style: none;
+}
+.navigation__item {
+  margin-bottom: 20px;
+}
+.navigation__item a {
+  text-decoration: none;
+  color: #171717;
+}
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+nav{
+  display: flex;
+  justify-content: flex-end;
+
+}
+.tableClass{
+margin: 10px auto;
+padding: 5px;
+text-align: center;
+width:fit-content;
+}
+.table {
+  padding-top: 10px;
+  margin:0 auto;
+}
+/* spiner */
+.loader {
+  padding-top: 20px;
+  border: 16px solid #111c63;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  margin:0 auto;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.main {
+  margin:0 auto;
+  /* margin-left: 300px;
+  margin-right: 300px; */
+
+}
+@media screen and (max-width: 900px) {
+  .main {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+@media screen and (min-width: 900px) {
+  .main {
+    margin-left: 200px;
+    margin-right: 200px;
+  }
+}
+.desctription{
+  /* margin-left:  300px; */
+  padding-bottom: 30px;
+  text-align:justify;
 }

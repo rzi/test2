@@ -10,11 +10,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link rel='icon' type='image/x-icon' href="/favicon.ico">
+  <!-- <link rel='icon' type='image/x-icon' href="/favicon.ico"> -->
  <!-- <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA/4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAERABAAEAEBAQABAQEBABAAEAEQARABAQABAQABAAAQARAAEQARAAAAAAAAAAAAAAAAAAAAAAEREAEQAQAAAQAAEAEBAAABAAAAAQEAAAERAAEQAREAAQAAEAABABABAAAQAQEAEAEREAEQAREAAAAAAAAAAAD//wAA2N0AAKuqAADdmQAArrsAANnMAAD//wAA//8AAIZvAAC9rwAAv68AAI5jAAC97QAAva0AAIZjAAD//wAA" rel="icon" type="image/x-icon"> -->
  <link rel="icon" href="/favicon2.png" type="image/png">
+ <link href="./normalize.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+  <nav>
+    <button class="hamburger" aria-expanded="false">
+      <span class="sr-only">Otwórz/zamknij menu</span>
+      <span class="hamburger__box">
+        <span class="hamburger__inner"></span>
+      </span>
+    </button>
+    <div class="navigation">
+      <ul class="navigation__list">
+        <li class="navigation__item">
+          <a href="./"
+            ><strong>Main page </strong> <br />
+          </a>
+        </li>
+        <li class="navigation__item">
+          <a href="./manual"
+            ><strong>Minutnik </strong> <br />
+            <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <h2>ESP8266 Web Server</h2> 
   <form id="f1" action="" method="get">
     <input type="text" name="czas" size="10" />
