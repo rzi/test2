@@ -26,10 +26,16 @@
             </li>
             <li class="navigation__item">
               <a href="./manual"
-                ><strong>Ręczne sterowania </strong> <br />
+                ><strong>Ręczne sterowanie </strong> <br />
                 <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
               </a>
             </li>
+            <li class="navigation__item">
+                <a href="./program"
+                  ><strong>Automatyczne sterowanie </strong> <br />
+                  <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+                </a>
+              </li>
             <li class="navigation__item">
               <a href="./stopwatch"
                 ><strong>Minutnik </strong> <br />
@@ -40,9 +46,6 @@
         </div>
     </nav>
   <h2>ESP8266 Web Server</h2> 
-  <form id="f1" action="" method="get">
-    <input type="text" name="czas" size="10" />
-  </form>
   <br>
   <div > Manualnie </div>
   <br>
@@ -58,6 +61,12 @@
         nav.classList.toggle('navigation--active');
         }
         hamburger.addEventListener('click', handleClick)
+        function on() {
+        fetch ("http://192.168.100.7/led2on")
+        }
+        function off() {
+        fetch ("http://192.168.100.7/led2off")
+        }
 </script>
 </body>
 </html>

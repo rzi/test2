@@ -26,10 +26,16 @@
         </li>
         <li class="navigation__item">
           <a href="./manual"
-            ><strong>Ręczne sterowania </strong> <br />
+            ><strong>Ręczne sterowanie </strong> <br />
             <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
           </a>
         </li>
+        <li class="navigation__item">
+            <a href="./program"
+              ><strong>Automatyczne sterowanie </strong> <br />
+              <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+            </a>
+          </li>
         <li class="navigation__item">
           <a href="./stopwatch"
             ><strong>Minutnik </strong> <br />
@@ -40,23 +46,17 @@
     </div>
   </nav>
   <h2>ESP8266 Web Server</h2> 
-  <form id="f1" action="" method="get">
-    <input type="text" name="czas" size="10" />
-  </form>
   <br>
-
-  <div> Programowo</div>
-  <br>
-  <div class="group">
-    <input type="text" id="calendar">
-  </div>
-  <br>
-  <button onClick = setStart()> Ustaw Start</button>
-  <button onClick = setStop()> Ustaw Stop</button>
-  <p> Lista zaprogramowana</p>
-  <div id="list-container"></div>
-  <button onClick = eraseEEprom()> Kasuj EEprom</button>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="./main.js"></script>
+  <div>Opis działania servera</div>
+  <script >
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.navigation');      
+        const handleClick = () => {
+        hamburger.classList.toggle('hamburger--active');
+        hamburger.setAttribute('aria-expanded', hamburger.classList.contains('hamburger--active'));
+        nav.classList.toggle('navigation--active');
+        }
+        hamburger.addEventListener('click', handleClick)
+  </script>
 </body>
 </html>

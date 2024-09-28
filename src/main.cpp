@@ -201,6 +201,55 @@ void setup(){
     Serial.println(currentRecordIndex );
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
+  server.on("/program", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("get");
+    //List all parameters
+    int params = request->params();
+    String year;        
+    String month;
+    String day;
+    String hour;
+    String minute;
+
+    for (int i = 0; i < params; i++)
+    {
+      AsyncWebParameter* p = request->getParam(i);
+      Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+      // format 2024-09-01 12:00
+        String name =String(p->name().c_str());
+        String value = String(p->value().c_str());
+        Serial.print( "name ");
+        Serial.println( name);
+        Serial.print( "value ");
+        Serial.println( value);
+        for (i=0 ;i<4 ;i++){
+          year = year + p->value().charAt(i);
+        } 
+        Serial.println(year);
+        month = p->value().charAt(5) ;
+        month = month + p->value().charAt(6);
+        Serial.println(month);
+        day = p->value().charAt(8) ;
+        day = day + p->value().charAt(9);
+        Serial.println(day);
+        hour = p->value().charAt(11) ;
+        hour = hour + p->value().charAt(12);
+        Serial.println(hour);
+        minute = p->value().charAt(14) ;
+        minute = minute + p->value().charAt(15);
+        Serial.println(minute);
+      if (String(p->name().c_str()) == "start"){
+      LogRecord record1 = { 1, year.toInt(), month.toInt(), day.toInt(), hour.toInt(), minute.toInt()};
+      saveRecord(record1); 
+      } else{
+      LogRecord record1 = { 0, year.toInt(), month.toInt(), day.toInt(), hour.toInt(), minute.toInt()};
+      saveRecord(record1); 
+      }   
+    }
+    Serial.print("currentRecordIndex ");
+    Serial.println(currentRecordIndex );
+    request->send(SPIFFS, "/program.html", "text/html", false, processor); 
+  });
     server.on("/stopwatch", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get stopwatch");
     //List all parameters

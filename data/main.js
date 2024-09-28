@@ -1,35 +1,9 @@
 console.log("start");
 var pickrDate;
 document.getElementById("calendar").value =pickrDate;
-var year, month, day ,hour, minute, seconds
-function on() {
-  fetch ("http://192.168.100.7/led2on")
-}
-function off() {
-  fetch ("http://192.168.100.7/led2off")
-}
-function setStart() {
-  var startValue = document.getElementById("calendar").value;
-  console.log("Start value = " + startValue );
-  const url = new URL('http://192.168.100.7/');
-  url.searchParams.set('start', startValue);
-  if (startValue !=""){
-    fetch(url).then(location.reload());
-  }else{
-    alert("Wybierz datę !")
-  }
-}
-function setStop() {
-  var stopValue = document.getElementById("calendar").value;
-  console.log("Stop value = " + stopValue );
-  const url = new URL('http://192.168.100.7/');
-  url.searchParams.set('stop', stopValue);
-  if (stopValue !=""){
-    fetch(url).then(location.reload());
-  }else{
-    alert("Wybierz datę !")
-  }
-}
+var year, month, day ,hour, minute, second
+
+
 function zegar() {
   var data = new Date();
   year = data.getFullYear();

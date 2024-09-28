@@ -25,10 +25,16 @@
         </li>
         <li class="navigation__item">
           <a href="./manual"
-            ><strong>Ręczne sterowania </strong> <br />
+            ><strong>Ręczne sterowanie </strong> <br />
             <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
           </a>
         </li>
+        <li class="navigation__item">
+            <a href="./program"
+              ><strong>Automatyczne sterowanie </strong> <br />
+              <!-- <div class="tech">(JS, ExpressJS, API)</div> -->
+            </a>
+          </li>
         <li class="navigation__item">
           <a href="./stopwatch"
             ><strong>Minutnik </strong> <br />
@@ -51,7 +57,8 @@
     <br><br>
     <button onclick=btnOn()>Rozpocznij</button>
     <button onclick=btnOff()>Zatrzymaj</button>
-    <script>
+
+ <script>
         function btnOn(){
             console.log("click start");
             const status = 1;
@@ -108,14 +115,14 @@
                 alert("ustawe czs włączenia i wyłączenia !")
             }
         }
-        const hamburger = document.querySelector('.hamburger');
-        const nav = document.querySelector('.navigation');      
-        const handleClick = () => {
-        hamburger.classList.toggle('hamburger--active');
-        hamburger.setAttribute('aria-expanded', hamburger.classList.contains('hamburger--active'));
-        nav.classList.toggle('navigation--active');
-        }
-        hamburger.addEventListener('click', handleClick);
-    </script>
+  const hamburger = document.querySelector('.hamburger');
+  const nav = document.querySelector('.navigation');      
+  const handleClick = () => {
+  hamburger.classList.toggle('hamburger--active');
+  hamburger.setAttribute('aria-expanded', hamburger.classList.contains('hamburger--active'));
+  nav.classList.toggle('navigation--active');
+  }
+      hamburger.addEventListener('click', handleClick)
+</script>
 </body>
 </html>
