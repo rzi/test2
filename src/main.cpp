@@ -444,8 +444,6 @@ void setup(){
         Serial.print( "myIndex ");
         Serial.println(myIndex);
         for (int j=0 ;j< EEPROM_SIZE ;j++){
-          Serial.print( "j = ");
-          Serial.print(j);
           if (myIndex == 0){
             if (j <  EEPROM_SIZE-RECORD_SIZE){
             myArry[j] = myArry[j+ RECORD_SIZE];
@@ -457,7 +455,7 @@ void setup(){
             Serial.print(myArry[j]);
             if (j <  EEPROM_SIZE-RECORD_SIZE){
               int ind = myIndex* RECORD_SIZE;
-              if (j > ind)
+              if (j >= ind)
                myArry[j] = myArry[j+RECORD_SIZE];
             }
             else  {
