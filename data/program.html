@@ -15,7 +15,11 @@
     const url = new URL('http://192.168.100.7/');
     url.searchParams.set('start', startValue);
     if (startValue !=""){
-      fetch(url).then(location.reload());
+      fetch(url)
+      .then(response => {
+            response.text();
+            window.location.reload();
+        })
     }else{
       alert("Wybierz datę !")
     }
@@ -26,7 +30,11 @@
     const url = new URL('http://192.168.100.7/');
     url.searchParams.set('stop', stopValue);
     if (stopValue !=""){
-      fetch(url).then(location.reload());
+      fetch(url)
+        .then(response => {
+            response.text();
+            window.location.reload();
+        })
     }else{
       alert("Wybierz datę !")
     }
@@ -83,8 +91,11 @@
   <br>
   <button onClick = setStart()> Ustaw Start</button>
   <button onClick = setStop()> Ustaw Stop</button>
+  <br><br>
+  <div>Stan %GPIO_STATE% %console.log ("ok")%</div>
   <p> Lista zaprogramowana</p>
   <div id="list-container"></div>
+  <br>
   <button onClick = eraseEEprom()> Kasuj EEprom</button>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="main.js"></script>

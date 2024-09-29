@@ -114,6 +114,7 @@ void clearEEPROM() {
 void setup(){
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH); 
   // Initialize SPIFFS
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -494,7 +495,7 @@ void loop(){
   int sek = timeClient.getSeconds();
   Serial.println(sek);
    
-  if (sek == 0){
+  if (sek == 0 || sek == 30){
     time_t epochTime = timeClient.getEpochTime();
     Serial.print("Epoch Time: ");
     Serial.println(epochTime);

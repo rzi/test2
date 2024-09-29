@@ -51,7 +51,8 @@
   <br>
   <button onclick=on()> Włącz</button> 
   <button onclick=off()> Wyłącz</button>
-  <br>
+  <br><br>
+  <div>Stan %GPIO_STATE%</div>
 <script>
         const hamburger = document.querySelector('.hamburger');
         const nav = document.querySelector('.navigation');      
@@ -63,9 +64,18 @@
         hamburger.addEventListener('click', handleClick)
         function on() {
         fetch ("http://192.168.100.7/led2on")
+        .then(response => {
+            response.text();
+            window.location.reload();
+        })
         }
+        
         function off() {
         fetch ("http://192.168.100.7/led2off")
+        .then(response => {
+            response.text();
+            window.location.reload();
+        })
         }
 </script>
 </body>

@@ -1,9 +1,7 @@
 console.log("start");
 var pickrDate;
 document.getElementById("calendar").value =pickrDate;
-var year, month, day ,hour, minute, second
-
-
+var year, month, day ,hour, minute, second ,nextRefresh;
 function zegar() {
   var data = new Date();
   year = data.getFullYear();
@@ -12,6 +10,9 @@ function zegar() {
   hour = data.getHours();
   minute = data.getMinutes();
   second = data.getSeconds();
+  if (second == 0 ) {
+    window.location.reload();
+  }
   var terazjest = ""+ year + ((month<10)?"/0":"/")+ month + ((day<10)?"/0":"/")+ day + "  " +
    +hour+
   ((minute<10)?":0":":")+minute+
