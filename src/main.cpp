@@ -386,7 +386,7 @@ void setup(){
   server.on("/eeprom", HTTP_GET, [](AsyncWebServerRequest *request){
     LogRecord record;
     String output;
-    for (int i = 0; i <= MAX_RECORDS; i++) {
+    for (int i = 0; i < MAX_RECORDS; i++) {
       int address = i * RECORD_SIZE;
       EEPROM.get(address, record);  // Odczytujemy rekord
       // String myDoc;
@@ -425,12 +425,9 @@ void setup(){
     //List all parameters
     int params = request->params();
     byte myArry[EEPROM_SIZE];
-    byte myArry2[EEPROM_SIZE];
 
     for (int i = 0; i < EEPROM_SIZE; i++) {
       EEPROM.get(i, myArry[i]);  // Odczytujemy rekord
-      // Serial.print( "myArry ");
-      // Serial.println( myArry[i]);
     }
     for (int i = 0; i < params; i++){
       AsyncWebParameter* p = request->getParam(i);
@@ -444,50 +441,43 @@ void setup(){
         Serial.println(MAX_RECORDS);
         Serial.print( "RECORD_SIZE ");
         Serial.println(RECORD_SIZE);
-        int address = 0;
-        Serial.print( "adres ");
-        Serial.println(address);
         Serial.print( "myIndex ");
         Serial.println(myIndex);
         for (int j=0 ;j< EEPROM_SIZE ;j++){
+          Serial.print( "j = ");
+          Serial.print(j);
           if (myIndex == 0){
-            if (j < EEPROM_SIZE -RECORD_SIZE ){
-              myArry2[j] = myArry[j+RECORD_SIZE];
-            } else{
-              myArry2[j] = myArry[j];
+            if (j <  EEPROM_SIZE-RECORD_SIZE){
+            myArry[j] = myArry[j+ RECORD_SIZE];
+            } else {
+              myArry[j] = 0xFF;
             }
-          // Serial.print(j);
-          // Serial.print( " myArry[j]  ");
-          // Serial.print(myArry[j]);
-          // Serial.print( " myArry2[j]  ");
-          // Serial.println(myArry[j+myIndex*RECORD_SIZE]);
-
           }else{
-          myArry2[j] = myArry[j+myIndex*RECORD_SIZE];
-          // Serial.print( "j = ");
-          // Serial.print(j);
-          // Serial.print( " myArry[j]  ");
-          // Serial.print(myArry[j]);
-          // Serial.print( " myArry2[j]  ");
-          // Serial.println(myArry[j+myIndex*RECORD_SIZE]);
+            Serial.print( " myArry[j] = ");
+            Serial.print(myArry[j]);
+            if (j <  EEPROM_SIZE-RECORD_SIZE){
+              int ind = myIndex* RECORD_SIZE;
+              if (j > ind)
+               myArry[j] = myArry[j+RECORD_SIZE];
+            }
+            else  {
+              myArry[j] = 0xFF;
+            }
           }
-
         }
-        for (int i = 0 ; i < EEPROM_SIZE; i++) {
-          EEPROM.write(i, myArry2[i]);                 
-        }
-        EEPROM.commit();
-          if (currentRecordIndex >0 ) {
-            currentRecordIndex =currentRecordIndex -1;
-          }
-          Serial.print("currentRecordIndex " );
-          Serial.println(currentRecordIndex );
-          // Serial.print("EEPROM ma rekordw " );
-          // Serial.println(currentRecordIndex);
       } else{
         Serial.print( "błąd ");
       }   
     }
+    for (int i = 0 ; i < EEPROM_SIZE; i++) {
+          EEPROM.write(i, myArry[i]);                 
+    }
+    EEPROM.commit();
+    if (currentRecordIndex >0 ) {
+        currentRecordIndex =currentRecordIndex -1;
+    }
+    Serial.print("currentRecordIndex " );
+    Serial.println(currentRecordIndex );
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
   server.on("/erase", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -556,12 +546,15 @@ void loop(){
     Serial.println(currentDate);
     Serial.println("");
 
+    Serial.print("Current index: ");
+    Serial.println(currentRecordIndex);
+
     Serial.println("Odczyt eeprom");   
     // readAllRecords();
 
     // RTC
      LogRecord record[MAX_RECORDS];
-      for (int i = 0; i <= MAX_RECORDS; i++) {
+      for (int i = 0; i < MAX_RECORDS; i++) {
         int address = i * RECORD_SIZE;
         EEPROM.get(address, record[i]);  // Odczytujemy rekord
         Serial.print("Rekord ");
