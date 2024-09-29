@@ -145,7 +145,7 @@ void setup(){
   // GMT 0 = 0
   timeClient.setTimeOffset(2);
   LogRecord record;
-    // Obsługa favicon
+  // Obsługa favicon
   server.on("/favicon2.png", HTTP_GET, [](AsyncWebServerRequest *request) {
     AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/favicon2.png", "image/png");
     Serial.println("favicon");
@@ -202,7 +202,7 @@ void setup(){
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
   server.on("/program", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("get");
+    Serial.println("get program");
     //List all parameters
     int params = request->params();
     String year;        
@@ -250,7 +250,7 @@ void setup(){
     Serial.println(currentRecordIndex );
     request->send(SPIFFS, "/program.html", "text/html", false, processor); 
   });
-    server.on("/stopwatch", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/stopwatch", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get stopwatch");
     //List all parameters
     int params = request->params();
@@ -270,7 +270,7 @@ void setup(){
     }
     request->send(SPIFFS, "/stopwatch.html", "text/html", false, processor); 
   });
-    server.on("/stopwatch2", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/stopwatch2", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get manual2");
     int params = request->params();
     Serial.print("params = ");
@@ -305,7 +305,7 @@ void setup(){
     }
     request->send(200, "application/json", String(status));
   });
-    server.on("/manual", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/manual", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get manual");
     //List all parameters
     int params = request->params();
@@ -325,7 +325,7 @@ void setup(){
     }
     request->send(SPIFFS, "/manual.html", "text/html", false, processor); 
   });
-    server.on("/manual2", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/manual2", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get manual2");
     int params = request->params();
     Serial.print("params = ");
@@ -364,7 +364,7 @@ void setup(){
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
-    server.on("/normalize.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/normalize.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/normalize.css", "text/css");
   });
   server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -451,11 +451,11 @@ void setup(){
         Serial.println(myIndex);
         for (int j=0 ;j< EEPROM_SIZE ;j++){
           if (myIndex == 0){
-          if (j < EEPROM_SIZE -RECORD_SIZE ){
-            myArry2[j] = myArry[j+RECORD_SIZE];
-          } else{
-            myArry2[j] = myArry[j];
-          }
+            if (j < EEPROM_SIZE -RECORD_SIZE ){
+              myArry2[j] = myArry[j+RECORD_SIZE];
+            } else{
+              myArry2[j] = myArry[j];
+            }
           // Serial.print(j);
           // Serial.print( " myArry[j]  ");
           // Serial.print(myArry[j]);
@@ -495,7 +495,7 @@ void setup(){
     clearEEPROM();
     request->send(SPIFFS, "/index.html", "text/html", false, processor); 
   });
-  //  server.serveStatic("200", SPIFFS, "/favicon.ico");
+
   // Start server
   server.begin();
   initEEPROM();                    // Inicjalizujemy EEPROM
