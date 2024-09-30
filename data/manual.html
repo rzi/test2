@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>ESP8266 Web Server</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="./normalize.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="icon" href="/favicon2.png" type="image/png">
-    <link href="./normalize.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <nav>
@@ -52,31 +52,7 @@
   <button onclick=on()> Włącz</button> 
   <button onclick=off()> Wyłącz</button>
   <br><br>
-  <div>Stan %GPIO_STATE%</div>
-<script>
-        const hamburger = document.querySelector('.hamburger');
-        const nav = document.querySelector('.navigation');      
-        const handleClick = () => {
-        hamburger.classList.toggle('hamburger--active');
-        hamburger.setAttribute('aria-expanded', hamburger.classList.contains('hamburger--active'));
-        nav.classList.toggle('navigation--active');
-        }
-        hamburger.addEventListener('click', handleClick)
-        function on() {
-        fetch ("http://192.168.100.7/led2on")
-        .then(response => {
-            response.text();
-            window.location.reload();
-        })
-        }
-        
-        function off() {
-        fetch ("http://192.168.100.7/led2off")
-        .then(response => {
-            response.text();
-            window.location.reload();
-        })
-        }
-</script>
+  <div id="state">Stan %GPIO_STATE%</div>
+  <script src="manual.js"></script>
 </body>
 </html>

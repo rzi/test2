@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title>ESP8266 Web Server</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="./normalize.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link rel="icon" href="/favicon2.png" type="image/png">
-  <link href="./normalize.css" rel="stylesheet" type="text/css" />
   <script>
     function setStart() {
     var startValue = document.getElementById("calendar").value;
@@ -78,7 +78,6 @@
         </div>
     </nav>
   <h2>ESP8266 Web Server</h2> 
-
   <form id="f1" action="" method="get">
     <input type="text" name="czas" size="10" />
   </form>
@@ -88,17 +87,16 @@
   <div class="group">
     <input type="text" id="calendar">
   </div>
-  <br>
+  <br><br>
   <button onClick = setStart()> Ustaw Start</button>
   <button onClick = setStop()> Ustaw Stop</button>
   <br><br>
-  <div>Stan %GPIO_STATE% %console.log ("ok")%</div>
+  <div id = "state">Stan %GPIO_STATE%</div>
   <p> Lista zaprogramowana</p>
   <div id="list-container"></div>
   <br>
   <button onClick = eraseEEprom()> Kasuj EEprom</button>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="main.js"></script>
-
 </body>
 </html>

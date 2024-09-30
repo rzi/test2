@@ -1,4 +1,3 @@
-console.log("start");
 var pickrDate;
 document.getElementById("calendar").value =pickrDate;
 var year, month, day ,hour, minute, second ,nextRefresh;
@@ -18,6 +17,14 @@ function zegar() {
   ((minute<10)?":0":":")+minute+
   ((second<10)?":0":":")+second;
   document.getElementById("f1").czas.value = terazjest;
+  var state = document.getElementById("state");
+  if (state.innerText == "Stan OFF"){
+    state.style.color = 'white'
+    state.style.backgroundColor = 'green'
+  }else{
+    state.style.color = 'white'
+    state.style.backgroundColor = 'red'
+  }
   setTimeout("zegar()", 1000);
 }
 zegar();
