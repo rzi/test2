@@ -10,6 +10,7 @@
 #include "AsyncJson.h"
 #include <EEPROM.h>
 #include <EDB.h>
+
 // #include <ESP_EEPROM.h>
 
 // Replace with your network credentials
@@ -18,6 +19,15 @@ const char* password = "rafalzietak"; //Replace with your own password
 
 const int ledPin = 2;
 String ledState;
+int stopwatchStatus, stopwatchStart, stopwatchStop;
+// unsigned long miganieLED1 = 2000;
+// unsigned long aktualnyCzas = 0;
+// unsigned long zapamietanyCzasLED1 = 0;
+unsigned long previousMillis = 0;  // Zmienna do przechowywania poprzedniego czasu
+long intervalOn = 1000;  // Czas włączenia diody (1 sekunda = 1000 ms)
+long intervalOff = 2000; // Czas, po którym wyłączy się dioda (2 sekundy = 2000 ms)
+
+
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
@@ -272,13 +282,13 @@ void setup(){
     request->send(SPIFFS, "/stopwatch.html", "text/html", false, processor); 
   });
   server.on("/stopwatch2", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("get manual2");
+    Serial.println("get stopwatch2");
     int params = request->params();
     Serial.print("params = ");
     Serial.println(params);
-    int status;
-    int start;
-    int stop;
+    // int status;
+    // int start;
+    // int stop;
 
     for (int i = 0; i < params; i++)
     {
@@ -293,18 +303,18 @@ void setup(){
         Serial.println(value);
         Serial.println("------");
         if (key == "start") {
-          start = value.toInt();
+          stopwatchStart = value.toInt();
         } else if( key =="stop"){
-          stop =value.toInt();
+          stopwatchStop =value.toInt();
         }else if (key == "status")
         {
-          status = value.toInt();
+          stopwatchStatus = value.toInt();
         }else  
         {
            Serial.println("nieznana wartosc");
         }
     }
-    request->send(200, "application/json", String(status));
+    request->send(200, "application/json", String(stopwatchStatus));
   });
   server.on("/manual", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("get manual");
@@ -371,7 +381,7 @@ void setup(){
   server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/main.js", "text/html");
   });
-    server.on("/manual.js", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/manual.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/manual.js", "text/html");
   });
   server.on("/stopwatch.js", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -499,8 +509,24 @@ void setup(){
 void loop(){
   timeClient.update();
   int sek = timeClient.getSeconds();
-  Serial.println(sek);
-   
+  // Serial.println(sek);
+  unsigned long currentMillis = millis();  // Aktualny czas
+  if(stopwatchStatus ==1){
+    intervalOn = stopwatchStart * 1000;
+    intervalOff = stopwatchStop * 1000;
+    // Jeśli dioda jest wyłączona, zaświeć ją na 1 sekundę
+    if (digitalRead(ledPin) == LOW && currentMillis - previousMillis >= intervalOn) {
+      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
+      digitalWrite(ledPin, HIGH);       // Włącz diodę          
+    }
+
+    // Jeśli dioda jest włączona, wyłącz ją po 2 sekundach
+    if (digitalRead(ledPin) == HIGH && currentMillis - previousMillis >= intervalOff) {
+      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
+      digitalWrite(ledPin, LOW);        // Wyłącz diodę        
+    }
+  }
+
   if (sek == 0 || sek == 30){
     time_t epochTime = timeClient.getEpochTime();
     Serial.print("Epoch Time: ");
@@ -598,5 +624,5 @@ void loop(){
         }
       }
   }
-  delay(750);
+  // delay(750);
 }

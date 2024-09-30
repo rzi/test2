@@ -4,7 +4,7 @@ function btnOn(){
     var startValue = document.getElementById("setON").value;
     var stoptValue = document.getElementById("setOFF").value;
     console.log("Start value = " + startValue +" stop value = "+stoptValue);
-    const url = new URL('http://192.168.100.7/manual2');
+    const url = new URL('http://192.168.100.7/stopwatch2');
     url.searchParams.append('start', startValue);
     url.searchParams.append('stop', stoptValue);
     url.searchParams.append('status', status);
@@ -18,8 +18,10 @@ function btnOn(){
             var myspan = document.getElementById('status');
             if (status == 1){
                 myspan.innerText = "aktywny";
+                myspan.color = "red";
             }else{
                 myspan.innerText = "nieaktywny";
+                myspan.color = "green";
             }
         });
     }else{
@@ -32,7 +34,7 @@ function btnOff(){
     var startValue = document.getElementById("setON").value;
     var stoptValue = document.getElementById("setOFF").value;
     console.log("Start value = " + startValue +" stop value = "+stoptValue);
-    const url = new URL('http://192.168.100.7/manual2');
+    const url = new URL('http://192.168.100.7/stopwatch2');
     url.searchParams.append('start', startValue);
     url.searchParams.append('stop', stoptValue);
     url.searchParams.append('status', status);
@@ -46,8 +48,10 @@ function btnOff(){
             var myspan = document.getElementById('status');
             if (status == 1){
                 myspan.innerText = "aktywny";
+                myspan.color = "red";
             }else{
                 myspan.innerText = "nieaktywny";
+                myspan.color = "green";
             }
         });
     }else{
@@ -55,18 +59,18 @@ function btnOff(){
     }
 }
 
-function zegar() {
-  var state = document.getElementById("state");
-  if (state.innerText == "Stan OFF"){
-    state.style.color = 'white'
-    state.style.backgroundColor = 'green'
-  }else{
-    state.style.color = 'white'
-    state.style.backgroundColor = 'red'
-  }
-  setTimeout("zegar()", 1000);
-}
-zegar();
+// function zegar() {
+//   var state = document.getElementById("state");
+//   if (state.innerText == "Stan OFF"){
+//     state.style.color = 'white'
+//     state.style.backgroundColor = 'green'
+//   }else{
+//     state.style.color = 'white'
+//     state.style.backgroundColor = 'red'
+//   }
+//   setTimeout("zegar()", 1000);
+// }
+// zegar();
 const hamburger = document.querySelector('.hamburger');
 const nav = document.querySelector('.navigation');
 const handleClick = () => {
