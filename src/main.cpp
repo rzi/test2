@@ -602,12 +602,14 @@ void loop(){
         Serial.print(record[i].hour);
         Serial.print(", Minute: ");
         Serial.println(record[i].minute);
-         if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type==1){
+         if (currentYear == record.[i].year && currentMonth == record[i].month && monthDay == record[i].day &&
+         currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type==1){
           //set
           Serial.println("załączeine"); 
           digitalWrite(ledPin, LOW);  
           // delay(750);
-        }else if (currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type == 0){
+        }else if (currentYear == record.[i].year && currentMonth == record[i].month && monthDay == record[i].day &&
+          currentHour == record[i].hour && currentMinute == record[i].minute && record[i].type == 0){
         // unset
         digitalWrite(ledPin, HIGH); 
         Serial.println("wyłączeine"); 
