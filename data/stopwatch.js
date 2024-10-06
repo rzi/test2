@@ -66,3 +66,37 @@ const handleClick = () => {
   nav.classList.toggle('navigation--active');
 }
 hamburger.addEventListener('click', handleClick);
+var checkbox = document.querySelector("input[name=input1]");
+
+checkbox.addEventListener('change', function() {
+    var myCheckbox;
+    var startValue = document.getElementById("setON").value;
+    var stoptValue = document.getElementById("setOFF").value;
+  if (this.checked) {
+    console.log("Checkbox is checked..");
+    myCheckbox =1;
+  } else {
+    console.log("Checkbox is not checked..");
+    myCheckbox=0;
+  }
+  const url = new URL('http://192.168.100.7/stopwatch2');
+    url.searchParams.append('mycheckbox', myCheckbox);
+    url.searchParams.append('start', startValue);
+    url.searchParams.append('stop', stoptValue);
+    console.log("url " + url.search);
+        fetch(url)
+        .then((response) => response.json())
+        .then((text) => {
+            let status = parseInt(text);
+            console.log("status "  +status);
+            var myspan = document.getElementById('status');
+            if (status == 1){
+                myspan.innerText = "aktywny";
+                myspan.color = "red";
+            }else{
+                myspan.innerText = "nieaktywny";
+                myspan.color = "green";
+            }
+        });
+
+});

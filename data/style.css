@@ -3,6 +3,7 @@ html {
   display: inline-block;
   margin: 0px auto;
   text-align: center;
+  background: #efefec;
 }
 h1{
   color: #070812;
@@ -241,4 +242,13 @@ ul {
 .status{
   display: inline-block;
   padding: 10px;
+}
+label{
+  margin: 0;
+  padding: 0;
+}
+#input1{
+  margin: 0;
+  padding: 0;
+  width: 10px;
 }

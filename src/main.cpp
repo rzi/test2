@@ -18,7 +18,9 @@ const char* ssid = "RZI"; //Replace with your own SSID
 const char* password = "rafalzietak"; //Replace with your own password
 
 const int ledPin = 2;
+const int inputPin = 4;
 String ledState;
+int triger =0;
 int stopwatchStatus, stopwatchStart, stopwatchStop;
 // unsigned long miganieLED1 = 2000;
 // unsigned long aktualnyCzas = 0;
@@ -124,6 +126,7 @@ void clearEEPROM() {
 void setup(){
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
+  pinMode(inputPin, INPUT);
   digitalWrite(ledPin, HIGH); 
   // Initialize SPIFFS
   if(!SPIFFS.begin()){
@@ -132,6 +135,8 @@ void setup(){
   }
   Serial.println("");
   Serial.println("Start");
+  Serial.print("input pin = ");
+  Serial.println(digitalRead(inputPin));
   Dir dir = SPIFFS.openDir("/");
   while (dir.next()) {
       Serial.println(dir.fileName());
@@ -301,7 +306,7 @@ void setup(){
         Serial.println( key);
         Serial.print( "value ");
         Serial.println(value);
-        Serial.println("------");
+        Serial.println("------.....");
         if (key == "start") {
           stopwatchStart = value.toInt();
         } else if( key =="stop"){
@@ -309,9 +314,19 @@ void setup(){
         }else if (key == "status")
         {
           stopwatchStatus = value.toInt();
+        }else if (key == "mycheckbox")
+        {
+          int val = value.toInt();
+          if (val == 1){
+            triger =1;
+          } else{
+            triger =0;
+          }
+          stopwatchStatus = 0; 
         }else  
         {
-           Serial.println("nieznana wartosc");
+           Serial.print("nieznana wartosc = ");
+           Serial.println(stopwatchStatus);
         }
     }
     request->send(200, "application/json", String(stopwatchStatus));
@@ -511,15 +526,28 @@ void loop(){
   int sek = timeClient.getSeconds();
   // Serial.println(sek);
   unsigned long currentMillis = millis();  // Aktualny czas
-  if(stopwatchStatus ==1){
-    intervalOn = stopwatchStart * 1000;
-    intervalOff = stopwatchStop * 1000;
+  int readPin =digitalRead(inputPin);
+  intervalOn = stopwatchStart * 1000;
+  intervalOff = stopwatchStop * 1000;
+  Serial.printf("redpin %i  triger %i stopwatchStart %i stopwatchStop %i\n", readPin,triger,stopwatchStart,stopwatchStop);
+  if(stopwatchStatus == 1 ){
     // Jeśli dioda jest wyłączona, zaświeć ją na 1 sekundę
     if (digitalRead(ledPin) == LOW && currentMillis - previousMillis >= intervalOn) {
       previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
       digitalWrite(ledPin, HIGH);       // Włącz diodę          
     }
-
+    // Jeśli dioda jest włączona, wyłącz ją po 2 sekundach
+    if (digitalRead(ledPin) == HIGH && currentMillis - previousMillis >= intervalOff) {
+      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
+      digitalWrite(ledPin, LOW);        // Wyłącz diodę        
+    }
+  }
+  if(readPin == 0 && triger == 1){
+    // Jeśli dioda jest wyłączona, zaświeć ją na 1 sekundę
+    if (digitalRead(ledPin) == LOW && currentMillis - previousMillis >= intervalOn) {
+      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
+      digitalWrite(ledPin, HIGH);       // Włącz diodę          
+    }
     // Jeśli dioda jest włączona, wyłącz ją po 2 sekundach
     if (digitalRead(ledPin) == HIGH && currentMillis - previousMillis >= intervalOff) {
       previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
@@ -527,7 +555,7 @@ void loop(){
     }
   }
 
-  if (sek == 0 || sek == 30){
+  if (sek == 0 ){
     time_t epochTime = timeClient.getEpochTime();
     Serial.print("Epoch Time: ");
     Serial.println(epochTime);
