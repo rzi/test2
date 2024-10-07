@@ -21,6 +21,11 @@ const int ledPin = 2;
 const int inputPin = 4;
 String ledState;
 int triger =0;
+bool isOn =false;
+int current  =0;
+int startTime =0;
+int timeON =0;
+int timeOFF =0; 
 int stopwatchStatus, stopwatchStart, stopwatchStop;
 // unsigned long miganieLED1 = 2000;
 // unsigned long aktualnyCzas = 0;
@@ -311,6 +316,7 @@ void setup(){
           stopwatchStart = value.toInt();
         } else if( key =="stop"){
           stopwatchStop =value.toInt();
+          digitalWrite(ledPin, HIGH); 
         }else if (key == "status")
         {
           stopwatchStatus = value.toInt();
@@ -319,8 +325,10 @@ void setup(){
           int val = value.toInt();
           if (val == 1){
             triger =1;
+            digitalWrite(ledPin, HIGH); 
           } else{
             triger =0;
+            
           }
           stopwatchStatus = 0; 
         }else  
@@ -522,6 +530,7 @@ void setup(){
   readAllRecords();
 }
 void loop(){
+
   timeClient.update();
   int sek = timeClient.getSeconds();
   // Serial.println(sek);
@@ -529,7 +538,11 @@ void loop(){
   int readPin =digitalRead(inputPin);
   intervalOn = stopwatchStart * 1000;
   intervalOff = stopwatchStop * 1000;
-  Serial.printf("redpin %i  triger %i stopwatchStart %i stopwatchStop %i\n", readPin,triger,stopwatchStart,stopwatchStop);
+
+  // Serial.printf("readpin %i  triger %i isOn %d status %i start %i stop %i current %i previous %i diff %i\n", 
+  // readPin,triger,isOn,stopwatchStatus, stopwatchStart,stopwatchStop, currentMillis, previousMillis , diff);
+    // Serial.printf("readpin %i  triger %i isOn %d status %i start %i stop %i current %i intervalOn %i intervalOff %i\n", 
+  // readPin,triger,isOn,stopwatchStatus, stopwatchStart,stopwatchStop, current, intervalOn , intervalOff);
   if(stopwatchStatus == 1 ){
     // Jeśli dioda jest wyłączona, zaświeć ją na 1 sekundę
     if (digitalRead(ledPin) == LOW && currentMillis - previousMillis >= intervalOn) {
@@ -542,18 +555,41 @@ void loop(){
       digitalWrite(ledPin, LOW);        // Wyłącz diodę        
     }
   }
-  if(readPin == 0 && triger == 1){
-    // Jeśli dioda jest wyłączona, zaświeć ją na 1 sekundę
-    if (digitalRead(ledPin) == LOW && currentMillis - previousMillis >= intervalOn) {
-      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
-      digitalWrite(ledPin, HIGH);       // Włącz diodę          
+
+    // Serial.print("ledPin = ");
+    // Serial.print(digpinPinitalRead(ledPin));  
+    Serial.print(" readPin = ");
+    Serial.println(readPin); //sprawdzi czy readPin powinno by 0
+   
+    if (!isOn && triger == 1 && readPin == 0) {  
+      isOn = true;                
+      startTime = millis();         
+      timeON = startTime + intervalOn;
+      timeOFF  = startTime + intervalOn+intervalOff;
+      // Serial.print(" startTime = ");
+      // Serial.print(startTime);  
+      // Serial.print(" timeON = ");
+      // Serial.print(timeON); 
+      // Serial.print(" timeOFF = ");
+      // Serial.println(timeOFF); 
     }
-    // Jeśli dioda jest włączona, wyłącz ją po 2 sekundach
-    if (digitalRead(ledPin) == HIGH && currentMillis - previousMillis >= intervalOff) {
-      previousMillis = currentMillis;   // Zaktualizuj poprzedni czas
-      digitalWrite(ledPin, LOW);        // Wyłącz diodę        
+    current = millis();
+    // Serial.print(" startTime = ");
+    // Serial.print(startTime);  
+    // Serial.print("current = ");
+    // Serial.println(current);  
+    // Serial.print(" intervalOn = ");
+    // Serial.println(intervalOn);  
+    if (triger == 1 &&( current < timeON)) { 
+      digitalWrite(ledPin, LOW);
+    } else if (triger == 1 && ( current >= timeON && current <= timeOFF ))
+    {
+      digitalWrite(ledPin, HIGH);
+    }else{
+      isOn = false;
     }
-  }
+    
+    // delay(500);
 
   if (sek == 0 ){
     time_t epochTime = timeClient.getEpochTime();
