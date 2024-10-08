@@ -34,6 +34,11 @@ unsigned long previousMillis = 0;  // Zmienna do przechowywania poprzedniego cza
 long intervalOn = 1000;  // Czas włączenia diody (1 sekunda = 1000 ms)
 long intervalOff = 2000; // Czas, po którym wyłączy się dioda (2 sekundy = 2000 ms)
 
+IPAddress local_IP(192, 168, 100, 7);
+IPAddress gateway(192, 168, 100, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);   // opcjonalnie
+IPAddress secondaryDNS(8, 8, 4, 4); // opcjonalnie
 
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
@@ -150,6 +155,7 @@ void setup(){
       Serial.println (f.size());
   }
   // Connect to Wi-Fi
+  WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -589,7 +595,7 @@ void loop(){
       isOn = false;
     }
     
-    // delay(500);
+    delay(500);
 
   if (sek == 0 ){
     time_t epochTime = timeClient.getEpochTime();
