@@ -67,7 +67,6 @@ const handleClick = () => {
 }
 hamburger.addEventListener('click', handleClick);
 var checkbox = document.querySelector("input[name=input1]");
-
 checkbox.addEventListener('change', function() {
     var myCheckbox;
     var startValue = document.getElementById("setON").value;
